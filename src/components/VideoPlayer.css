@@ -1,0 +1,223 @@
+/* src/components/VideoPlayer.css */
+/* Styles for the video player and its placeholder */
+
+.video-player {
+  padding: 20px;
+  background-color: var(--color-background-paper);
+  display: flex;
+  flex-direction: column;
+  height: 100%; /* Ensure it takes full height of its parent (main-content) */
+  box-sizing: border-box;
+  margin-bottom: 20px; /* Added margin to create space at the bottom */
+}
+
+.video-player .video-header-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+  flex-shrink: 0;
+}
+
+.video-player h2 {
+  margin: 0;
+  font-family: 'DM Sans', sans-serif;
+  color: var(--color-text-dark);
+  font-size: 1.6em;
+  font-weight: 700;
+  text-align: left;
+  letter-spacing: 0.01em;
+  flex-grow: 1;
+}
+
+.video-category-detail {
+  font-family: 'DM Sans', sans-serif;
+  font-style: italic;
+  color: var(--color-text-medium);
+  margin-bottom: 12px;
+  font-size: 0.9em;
+  text-align: left;
+  font-weight: 500;
+  flex-shrink: 0;
+}
+
+.video-embed-container {
+  position: relative;
+  width: 100%;
+  height: auto; /* Allow height to be determined by flex */
+  overflow: hidden;
+  background-color: var(--color-background-hover);
+  border-radius: var(--border-radius-lg);
+  box-shadow: 0 2px 10px var(--shadow-medium);
+  margin-bottom: 15px;
+  flex-shrink: 0;
+  flex-grow: 1; /* Allow it to grow and take available space */
+  border: 1px solid var(--color-border);
+  min-height: 200px;
+  display: flex; /* Added flex to center video vertically if needed */
+  align-items: center;
+  justify-content: center;
+}
+
+.video-embed-container video {
+  width: 100%;
+  height: 100%;
+  object-fit: contain; /* Changed to 'contain' to ensure entire video is visible */
+  position: static; /* No longer absolutely positioned within padding-bottom trick */
+  border-radius: var(--border-radius-lg); /* Apply border-radius to video itself */
+}
+
+.video-description-container {
+  flex-grow: 0; /* Changed to 0 as description doesn't need to grow */
+  overflow-y: auto;
+  margin-bottom: 15px;
+  max-height: 100px; /* Limit description height to prevent it from pushing video up */
+}
+
+.video-description {
+  margin-top: 0;
+  color: var(--color-text-dark);
+  font-family: 'DM Sans', sans-serif;
+  line-height: 1.5;
+  font-size: 0.8em;
+  background-color: var(--color-background-hover);
+  padding: 12px;
+  border-radius: var(--border-radius-md);
+  border: 1px solid var(--color-border);
+  box-shadow: inset 0 1px 3px var(--shadow-subtle);
+}
+
+.video-meta-info {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.75em;
+  color: var(--color-text-medium);
+  margin-bottom: 4px;
+  text-align: left;
+}
+
+.video-player-placeholder {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  color: var(--color-text-light);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 1.1em;
+  background-color: var(--color-background-hover);
+  border-radius: var(--border-radius-lg);
+  text-align: center;
+  padding: 25px;
+  box-shadow: inset 0 0 8px var(--shadow-medium);
+  font-weight: 600;
+  line-height: 1.3;
+  border: 1px dashed var(--color-border);
+  flex-grow: 1; /* Allow placeholder to grow */
+}
+
+.video-player-placeholder p {
+  margin: 0;
+  max-width: 70%;
+}
+
+.video-error-placeholder {
+  position: absolute; /* Keep absolute for error overlay */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--color-background-hover);
+  color: #E57373;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.9em;
+  text-align: center;
+  padding: 15px;
+  box-sizing: border-box;
+  border-radius: var(--border-radius-lg);
+}
+
+.video-error-placeholder p {
+  margin: 5px 0;
+  max-width: 90%;
+  font-weight: 500;
+}
+
+.video-error-placeholder .small-text {
+  font-size: 0.75em;
+  color: var(--color-text-light);
+}
+
+
+.player-action-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.edit-video-button,
+.delete-video-button {
+  padding: 6px 15px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius-md);
+  cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.8em;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  transition: background-color 0.2s ease, box-shadow 0.2s ease, transform 0.1s ease;
+  box-shadow: 0 1px 3px var(--shadow-subtle);
+}
+
+.edit-video-button {
+  background-color: var(--color-background-hover);
+  color: var(--color-text-dark);
+}
+
+.edit-video-button:hover {
+  background-color: var(--color-primary-light); /* Light Blue */
+  color: var(--color-text-dark);
+  box-shadow: 0 2px 6px rgba(187, 222, 251, 0.5);
+  transform: translateY(-1px);
+}
+
+.delete-video-button {
+  background-color: #FFEBEE;
+  color: #D32F2F;
+}
+
+.delete-video-button:hover {
+  background-color: #FFCDD2;
+  box-shadow: 0 3px 8px rgba(255, 205, 210, 0.7);
+  transform: translateY(-1px);
+}
+
+.delete-video-button:active,
+.edit-video-button:active {
+  transform: translateY(0);
+  box-shadow: 0 1px 3px var(--shadow-subtle);
+}
+
+@media (max-width: 768px) {
+  .video-player {
+    padding: 10px;
+    margin-bottom: 10px; /* Adjust margin for mobile */
+  }
+  .video-player h2 {
+    font-size: 1.3em;
+  }
+  .video-embed-container {
+    min-height: 150px;
+  }
+  .video-description {
+    max-height: 70px;
+    font-size: 0.75em;
+  }
+  .edit-video-button,
+  .delete-video-button {
+    padding: 5px 12px;
+    font-size: 0.75em;
+  }
+}

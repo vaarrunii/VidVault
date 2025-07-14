@@ -1,0 +1,253 @@
+/* src/components/CategoryVideoGallery.css */
+/* Styles for the video gallery displayed when a category is selected */
+
+.category-gallery-container {
+  padding: 20px;
+  background-color: var(--color-background-paper);
+  height: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  width: 100%;
+}
+
+.gallery-title {
+  font-family: 'DM Sans', sans-serif;
+  color: var(--color-text-dark);
+  font-size: 1.6em;
+  font-weight: 700;
+  margin-top: 0;
+  margin-bottom: 20px;
+  text-align: left;
+  width: 100%;
+}
+
+.category-gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 20px;
+  width: 100%;
+  overflow-y: auto;
+  padding-bottom: 20px;
+  flex-grow: 1;
+}
+
+.gallery-video-card {
+  background-color: var(--color-background-paper);
+  border-radius: var(--border-radius-md);
+  box-shadow: 0 4px 15px var(--shadow-medium);
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  border: 1px solid var(--color-border);
+  display: flex;
+  flex-direction: column;
+  height: auto; /* Keep auto for content, but control inner padding */
+  max-height: 280px; /* Set a max height to make it vertically shorter */
+  min-height: 200px; /* Ensure a minimum height */
+  position: relative; /* Needed for positioning the delete button */
+}
+
+.gallery-video-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+  border-color: var(--color-primary-medium); /* Stronger accent border on hover */
+}
+
+/*
+// CSS for the delete button on gallery cards commented out as requested.
+// To re-enable, uncomment this block and the corresponding JSX in CategoryVideoGallery.js
+.gallery-delete-button {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background-color: rgba(255, 0, 0, 0.7); // Red with transparency
+  color: white;
+  border: none;
+  border-radius: 50%; // Make it circular
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2em;
+  font-weight: bold;
+  cursor: pointer;
+  z-index: 10; // Ensure it's above the video/thumbnail
+  opacity: 1; // Always visible
+  transform: scale(1); // Always full size
+  transition: opacity 0.2s ease, transform 0.2s ease, background-color 0.2s ease;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.gallery-delete-button:hover {
+  background-color: rgba(255, 0, 0, 0.9); // More opaque red on button hover
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
+}
+*/
+
+
+.video-thumbnail {
+  width: 100%;
+  padding-bottom: 56.25%; /* 16:9 aspect ratio */
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, var(--color-primary-light), var(--color-primary-medium)); /* Blue gradient for vibrancy */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.video-thumbnail video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: var(--border-radius-md) var(--border-radius-md) 0 0;
+}
+
+/* IMPROVED THUMBNAIL PLACEHOLDER STYLES */
+.thumbnail-placeholder {
+  color: var(--color-text-white);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.9em;
+  text-align: center;
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  background: linear-gradient(135deg, var(--color-primary-light), var(--color-primary-medium)); /* Match thumbnail background */
+  border-radius: var(--border-radius-md) var(--border-radius-md) 0 0;
+}
+
+.thumbnail-placeholder .icon {
+  font-size: 3.5em;
+  margin-bottom: 8px;
+  color: var(--color-text-white);
+  opacity: 0.8;
+  transition: transform 0.3s ease;
+}
+
+.gallery-video-card:hover .thumbnail-placeholder .icon {
+  transform: scale(1.1);
+}
+
+.thumbnail-placeholder p {
+  margin: 0;
+  color: var(--color-text-white);
+  font-weight: 600;
+}
+
+.gallery-video-info {
+  padding: 10px 15px; /* Reduced top/bottom padding */
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  flex-grow: 1;
+  justify-content: space-between; /* Distribute space */
+}
+
+.gallery-video-title {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 1em;
+  font-weight: 700;
+  color: var(--color-text-dark);
+  margin: 0 0 4px 0; /* Reduced margin below title */
+  display: -webkit-box;
+  -webkit-line-clamp: 2; /* Limit to 2 lines */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
+  line-height: 1.3;
+}
+
+.gallery-video-description {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.75em; /* Slightly smaller font for description */
+  color: var(--color-text-medium);
+  margin: 0 0 6px 0; /* Reduced margin below description */
+  display: -webkit-box;
+  -webkit-line-clamp: 2; /* Limit to 2 lines */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
+  line-height: 1.4;
+}
+
+.gallery-video-meta {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.7em; /* Slightly smaller font for meta info */
+  color: var(--color-text-medium);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
+  margin-top: auto; /* Pushes it to the bottom */
+}
+
+.category-gallery-placeholder {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  color: var(--color-text-light);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 1.2em;
+  background-color: var(--color-background-hover);
+  border-radius: var(--border-radius-lg);
+  text-align: center;
+  padding: 30px;
+  box-shadow: inset 0 0 10px var(--shadow-medium);
+  font-weight: 600;
+  line-height: 1.4;
+  border: 1px dashed var(--color-border);
+  width: 90%;
+  margin: 20px auto;
+}
+
+.category-gallery-placeholder p {
+  margin: 0;
+  max-width: 80%;
+}
+
+@media (max-width: 768px) {
+  .category-gallery-container {
+    padding: 15px;
+  }
+  .gallery-title {
+    font-size: 1.3em;
+    margin-bottom: 15px;
+  }
+  .category-gallery {
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 15px;
+  }
+  .gallery-video-card {
+    max-height: 240px; /* Adjust max-height for mobile */
+    min-height: 180px;
+  }
+  .gallery-video-info {
+    padding: 8px 10px; /* Further reduce padding on mobile */
+  }
+  .gallery-video-title {
+    font-size: 0.9em;
+  }
+  .gallery-video-description {
+    font-size: 0.7em;
+  }
+  .gallery-video-meta {
+    font-size: 0.65em;
+  }
+}

@@ -1,38 +1,143 @@
-.App {
-  text-align: center;
+/* src/App.css */
+/* Global styles, custom properties (variables), and main layout structure for VidVault */
+
+/* Define CSS Custom Properties (Variables) for consistent theming */
+:root {
+  /* Blue & Vibrant Palette */
+  --color-primary-dark: #1976D2; /* Deep Blue */
+  --color-primary-medium: #2196F3; /* Medium Blue */
+  --color-primary-light: #BBDEFB; /* Very Light Blue */
+  --color-secondary-accent: #80CBC4; /* Soft Teal/Mint - for complementary highlights (still works well with blue) */
+
+  /* Backgrounds */
+  --color-background-light: #FAFAFA; /* Even lighter, almost pure white background */
+  --color-background-paper: #FFFFFF; /* Pure white for cards and main content areas */
+  --color-background-hover: #F5F5F5; /* Very subtle light gray for hover states */
+  --color-background-subtle: #EEEEEE; /* Slightly darker light gray for input fields, etc. */
+
+
+  /* Text Colors */
+  --color-text-dark: #212121; /* Very dark gray for primary text */
+  --color-text-medium: #616161; /* Medium gray for secondary text */
+  --color-text-light: #BDBDBD; /* Light gray for placeholders, inactive text */
+  --color-text-white: #FFFFFF; /* White text for contrast */
+
+  /* Borders & Shadows */
+  --color-border: #E0E0E0; /* Light gray for borders */
+  --shadow-subtle: rgba(0, 0, 0, 0.03); /* Very light, diffused shadow */
+  --shadow-medium: rgba(0, 0, 0, 0.08); /* Slightly more pronounced shadow for depth */
+
+  /* Border Radii */
+  --border-radius-sm: 4px;
+  --border-radius-md: 8px;
+  --border-radius-lg: 12px;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+/* Basic reset for body and root element */
+body {
+  margin: 0;
+  font-family: 'DM Sans', sans-serif; /* Changed to DM Sans */
+  background-color: var(--color-background-light);
+  color: var(--color-text-dark);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+#root {
+  height: 100vh;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+.app-container {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  height: 100%;
+  overflow: hidden;
+  background-color: var(--color-background-light);
+}
+
+.app-header {
+  background-color: var(--color-background-paper);
+  padding: 10px 20px;
+  color: var(--color-text-dark);
+  text-align: center;
+  box-shadow: 0 1px 3px var(--shadow-subtle);
+  z-index: 10;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.app-header h1 {
+  margin: 0;
+  font-family: 'DM Sans', sans-serif; /* Changed to DM Sans */
+  font-size: 1.6em;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.content-area {
+  display: flex;
+  flex-grow: 1;
+  overflow: hidden;
+  padding: 10px;
+  gap: 10px;
+}
+
+.sidebar {
+  flex: 0 0 30%;
+  max-width: 30%;
+  background-color: var(--color-background-paper);
+  border-radius: var(--border-radius-lg);
+  box-shadow: 0 4px 12px var(--shadow-medium);
+  overflow-y: auto;
+  padding: 0;
+  box-sizing: border-box;
+  border: 1px solid var(--color-border);
+}
+
+.main-content {
+  flex: 1;
+  background-color: var(--color-background-paper);
+  border-radius: var(--border-radius-lg);
+  box-shadow: 0 4px 12px var(--shadow-medium);
+  padding: 0;
+  overflow-y: auto;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  border: 1px solid var(--color-border);
+}
+
+@media (max-width: 768px) {
+  .content-area {
+    flex-direction: column;
+    padding: 8px;
+    gap: 8px;
+  }
+
+  .sidebar, .main-content {
+    flex: none;
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .sidebar {
+    height: 250px;
+    box-shadow: 0 2px 8px var(--shadow-medium);
+  }
+
+  .app-header h1 {
+    font-size: 1.2em;
+  }
+}
+
+/* Loading Spinner (kept for App.js loading state) */
+.loading-spinner {
+  display: flex;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
-
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+  align-items: center;
+  height: 100%;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 1.2em;
+  color: var(--color-text-medium);
+  font-weight: 500;
 }

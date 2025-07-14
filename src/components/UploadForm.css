@@ -1,0 +1,139 @@
+/* src/components/UploadForm.css */
+/* Styles for the video upload form */
+
+.upload-form-container {
+  padding: 30px;
+  background-color: var(--color-background-paper);
+  border-radius: var(--border-radius-lg);
+  box-shadow: 0 3px 15px var(--shadow-medium);
+  max-width: 500px;
+  margin: 30px auto;
+  box-sizing: border-box;
+  border: 1px solid var(--color-border);
+}
+
+.upload-form-container h2 {
+  font-family: 'DM Sans', sans-serif;
+  color: var(--color-text-dark);
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 1.6em;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}
+
+.upload-form .form-group {
+  margin-bottom: 15px;
+}
+
+.upload-form label {
+  display: block;
+  margin-bottom: 5px;
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 600;
+  color: var(--color-text-dark);
+  font-size: 0.9em;
+}
+
+.upload-form input[type="text"],
+.upload-form input[type="number"],
+.upload-form textarea,
+.upload-form input[type="file"] {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius-md);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.85em;
+  box-sizing: border-box;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  color: var(--color-text-dark);
+  background-color: var(--color-background-subtle);
+}
+
+.upload-form input[type="text"]:focus,
+.upload-form input[type="number"]:focus,
+.upload-form textarea:focus,
+.upload-form input[type="file"]:focus {
+  outline: none;
+  border-color: var(--color-primary-medium);
+  box-shadow: 0 0 0 2px rgba(33, 150, 243, 0.3);
+  background-color: var(--color-background-paper);
+}
+
+.upload-form input[type="file"]::file-selector-button {
+  margin-right: 10px;
+  border: none;
+  background-color: var(--color-secondary-accent); /* Fresh teal for file selector */
+  padding: 7px 12px;
+  border-radius: var(--border-radius-sm);
+  color: var(--color-text-dark);
+  cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 600;
+  transition: background-color 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 1px 4px rgba(128, 203, 196, 0.5);
+}
+
+.upload-form input[type="file"]::file-selector-button:hover {
+  background-color: #64C2BA; /* Slightly darker teal */
+  box-shadow: 0 2px 6px rgba(128, 203, 196, 0.7);
+}
+
+.file-error {
+  color: #E57373;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.8em;
+  margin-top: 5px;
+  font-weight: 500;
+}
+
+.file-info {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.8em;
+  color: var(--color-text-medium);
+  margin-top: 4px;
+  font-style: italic;
+}
+
+.upload-form .form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 25px;
+}
+
+.upload-form .submit-button,
+.upload-form .cancel-button {
+  padding: 8px 18px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius-md);
+  cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.9em;
+  font-weight: 600;
+  transition: background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.upload-form .submit-button {
+  background-color: var(--color-primary-medium); /* Medium Blue */
+  color: var(--color-text-white);
+  box-shadow: 0 2px 8px rgba(33, 150, 243, 0.5);
+}
+
+.upload-form .submit-button:hover {
+  background-color: var(--color-primary-dark);
+  color: var(--color-text-white);
+  box-shadow: 0 3px 10px rgba(25, 118, 210, 0.7);
+}
+
+.upload-form .cancel-button {
+  background-color: var(--color-background-subtle);
+  color: var(--color-text-medium);
+  box-shadow: 0 1px 4px var(--shadow-subtle);
+}
+
+.upload-form .cancel-button:hover {
+  background-color: var(--color-background-hover);
+  box-shadow: 0 2px 6px var(--shadow-medium);
+}
