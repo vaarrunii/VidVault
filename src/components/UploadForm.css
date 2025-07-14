@@ -2,12 +2,12 @@
 /* Styles for the video upload form */
 
 .upload-form-container {
-  padding: 30px;
+  padding: 25px; /* Reduced padding */
   background-color: var(--color-background-paper);
   border-radius: var(--border-radius-lg);
   box-shadow: 0 3px 15px var(--shadow-medium);
-  max-width: 500px;
-  margin: 30px auto;
+  max-width: 450px; /* Slightly reduced max-width */
+  margin: 25px auto; /* Reduced margin */
   box-sizing: border-box;
   border: 1px solid var(--color-border);
 }
@@ -16,23 +16,23 @@
   font-family: 'DM Sans', sans-serif;
   color: var(--color-text-dark);
   text-align: center;
-  margin-bottom: 20px;
-  font-size: 1.6em;
+  margin-bottom: 18px; /* Reduced margin */
+  font-size: 1.4em; /* Reduced font size */
   font-weight: 700;
   letter-spacing: 0.01em;
 }
 
 .upload-form .form-group {
-  margin-bottom: 15px;
+  margin-bottom: 12px; /* Reduced margin */
 }
 
 .upload-form label {
   display: block;
-  margin-bottom: 5px;
+  margin-bottom: 4px; /* Reduced margin */
   font-family: 'DM Sans', sans-serif;
   font-weight: 600;
   color: var(--color-text-dark);
-  font-size: 0.9em;
+  font-size: 0.85em; /* Reduced font size */
 }
 
 .upload-form input[type="text"],
@@ -40,11 +40,11 @@
 .upload-form textarea,
 .upload-form input[type="file"] {
   width: 100%;
-  padding: 8px 10px;
+  padding: 7px 9px; /* Reduced padding */
   border: 1px solid var(--color-border);
   border-radius: var(--border-radius-md);
   font-family: 'DM Sans', sans-serif;
-  font-size: 0.85em;
+  font-size: 0.8em; /* Reduced font size */
   box-sizing: border-box;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
   color: var(--color-text-dark);
@@ -62,10 +62,10 @@
 }
 
 .upload-form input[type="file"]::file-selector-button {
-  margin-right: 10px;
+  margin-right: 8px; /* Reduced margin */
   border: none;
   background-color: var(--color-secondary-accent); /* Fresh teal for file selector */
-  padding: 7px 12px;
+  padding: 6px 10px; /* Reduced padding */
   border-radius: var(--border-radius-sm);
   color: var(--color-text-dark);
   cursor: pointer;
@@ -83,34 +83,34 @@
 .file-error {
   color: #E57373;
   font-family: 'DM Sans', sans-serif;
-  font-size: 0.8em;
-  margin-top: 5px;
+  font-size: 0.75em; /* Reduced font size */
+  margin-top: 4px; /* Reduced margin */
   font-weight: 500;
 }
 
 .file-info {
   font-family: 'DM Sans', sans-serif;
-  font-size: 0.8em;
+  font-size: 0.75em; /* Reduced font size */
   color: var(--color-text-medium);
-  margin-top: 4px;
+  margin-top: 3px; /* Reduced margin */
   font-style: italic;
 }
 
 .upload-form .form-actions {
   display: flex;
   justify-content: flex-end;
-  gap: 10px;
-  margin-top: 25px;
+  gap: 8px; /* Reduced gap */
+  margin-top: 20px; /* Reduced margin */
 }
 
 .upload-form .submit-button,
 .upload-form .cancel-button {
-  padding: 8px 18px;
+  padding: 7px 15px; /* Reduced padding */
   border: 1px solid var(--color-border);
   border-radius: var(--border-radius-md);
   cursor: pointer;
   font-family: 'DM Sans', sans-serif;
-  font-size: 0.9em;
+  font-size: 0.85em; /* Reduced font size */
   font-weight: 600;
   transition: background-color 0.2s ease, box-shadow 0.2s ease;
 }

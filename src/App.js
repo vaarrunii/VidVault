@@ -1,5 +1,6 @@
 // src/App.js
-import React, { useState, useEffect, useRef } from 'react';
+// src/App.js
+import React, { useState, useEffect, useRef } from 'react'; // Corrected syntax
 import VideoList from './components/VideoList';
 import VideoPlayer from './components/VideoPlayer';
 import UploadForm from './components/UploadForm';
@@ -14,10 +15,10 @@ function App() {
   const [editingVideo, setEditingVideo] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [currentView, setCurrentView] = useState('categories'); // Default to categories
-  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [selectedCategory, setSelectedCategory] = useState(null); // Null means no category selected
   const [sortOrder, setSortOrder] = useState('newest');
   const [showCategoryGallery, setShowCategoryGallery] = useState(false);
-  const [isLoading, setIsLoading] = useState(true); // New loading state
+  const [isLoading, setIsLoading] = useState(true);
 
   // Ref to store blob URLs to revoke them when no longer needed
   const blobUrlMap = useRef(new Map());
@@ -32,38 +33,39 @@ function App() {
         const videosWithUrls = await Promise.all(metadata.map(async (meta) => {
           if (meta.fileId) {
             const blob = await getVideoBlob(meta.fileId);
-            if (blob && blob.size > 0 && blob.type) { // Ensure blob is valid and has a type
+            if (blob && blob.size > 0 && blob.type) {
               const url = URL.createObjectURL(blob);
               console.log(`App.js: Created blob URL for video ID ${meta.id}: ${url} (size: ${blob.size}, type: ${blob.type})`);
-              blobUrlMap.current.set(meta.id, url); // Store URL for revocation
+              blobUrlMap.current.set(meta.id, url);
               return { ...meta, fileUrl: url, fileType: blob.type };
             } else {
               console.warn(`App.js: Blob for video ID ${meta.id} is invalid or missing type. Metadata:`, meta, "Retrieved Blob:", blob);
-              return { ...meta, fileUrl: undefined, fileType: undefined }; // Mark as unavailable
+              return { ...meta, fileUrl: undefined, fileType: undefined };
             }
           }
-          return meta; // Return metadata even if no fileId
+          return meta;
         }));
         setVideos(videosWithUrls);
 
         // Try to restore last selected video/category from localStorage
         const lastSelectedVideoId = localStorage.getItem('lastSelectedVideoId');
         const lastSelectedCategory = localStorage.getItem('lastSelectedCategory');
-        const lastCurrentView = localStorage.getItem('lastCurrentView');
 
         if (lastSelectedVideoId) {
           const videoToSelect = videosWithUrls.find(v => v.id === lastSelectedVideoId);
           if (videoToSelect) {
             setSelectedVideo(videoToSelect);
-            setShowCategoryGallery(false); // If a specific video is selected, don't show gallery
+            setShowCategoryGallery(false);
+            setCurrentView('videos'); // Ensure view is 'videos' if a specific video was selected
           }
         } else if (lastSelectedCategory) {
           setSelectedCategory(lastSelectedCategory);
-          setShowCategoryGallery(true); // If category was selected, show gallery
-        }
-
-        if (lastCurrentView) {
-          setCurrentView(lastCurrentView);
+          setShowCategoryGallery(true);
+          setCurrentView('categories'); // Ensure view is 'categories' if a category was selected
+        } else {
+          // Default to 'categories' view if nothing was previously selected
+          setCurrentView('categories');
+          setShowCategoryGallery(false); // Start with no gallery open, just categories list
         }
 
       } catch (error) {
@@ -75,24 +77,22 @@ function App() {
 
     loadVideos();
 
-    // Capture the current value of blobUrlMap.current for cleanup
     const currentBlobUrlMap = blobUrlMap.current;
 
-    // Cleanup: Revoke all blob URLs when the component unmounts
     return () => {
       currentBlobUrlMap.forEach(url => URL.revokeObjectURL(url));
       console.log("App.js: Revoked all blob URLs on unmount.");
     };
-  }, []); // Empty dependency array means this runs once on mount
+  }, []);
 
-  // Save last selected video/category/view to localStorage
+  // Save last selected state to localStorage
   useEffect(() => {
     if (selectedVideo) {
       localStorage.setItem('lastSelectedVideoId', selectedVideo.id);
-      localStorage.removeItem('lastSelectedCategory'); // Clear category if video is selected
+      localStorage.removeItem('lastSelectedCategory');
     } else if (selectedCategory && currentView === 'categories' && showCategoryGallery) {
       localStorage.setItem('lastSelectedCategory', selectedCategory);
-      localStorage.removeItem('lastSelectedVideoId'); // Clear video if category gallery is shown
+      localStorage.removeItem('lastSelectedVideoId');
     } else {
       localStorage.removeItem('lastSelectedVideoId');
       localStorage.removeItem('lastSelectedCategory');
@@ -101,13 +101,10 @@ function App() {
   }, [selectedVideo, selectedCategory, currentView, showCategoryGallery]);
 
 
-  // Handler for adding a new video
   const handleAddVideo = async (newVideoMetadata, videoFile) => {
     setIsLoading(true);
     try {
-      // Ensure fileType is part of metadata before adding
-      const metadataWithFileType = { ...newVideoMetadata, fileType: videoFile.type };
-      const addedVideo = await addVideo(metadataWithFileType, videoFile);
+      const addedVideo = await addVideo(newVideoMetadata, videoFile);
       const newUrl = URL.createObjectURL(videoFile);
       console.log(`App.js: Added video. Created new blob URL for video ID ${addedVideo.id}: ${newUrl} (size: ${videoFile.size}, type: ${videoFile.type})`);
       blobUrlMap.current.set(addedVideo.id, newUrl);
@@ -117,6 +114,7 @@ function App() {
       setShowForm(false);
       setEditingVideo(null);
       setShowCategoryGallery(false);
+      setCurrentView('videos'); // Switch to videos view after upload
     } catch (error) {
       console.error("App.js: Error adding video:", error);
       alert("Failed to add video. Please try again.");
@@ -125,10 +123,12 @@ function App() {
     }
   };
 
-  // Handler for updating an existing video
   const handleUpdateVideo = async (updatedVideoMetadata, newVideoFile) => {
     setIsLoading(true);
     try {
+      // Find the current version of the video from the state to preserve its existing fileUrl/fileType
+      const existingVideoInState = videos.find(v => v.id === updatedVideoMetadata.id);
+
       // Revoke old blob URL if a new file is provided for update
       if (newVideoFile && updatedVideoMetadata.id && blobUrlMap.current.has(updatedVideoMetadata.id)) {
         URL.revokeObjectURL(blobUrlMap.current.get(updatedVideoMetadata.id));
@@ -136,45 +136,55 @@ function App() {
         console.log(`App.js: Revoked old blob URL for video ID ${updatedVideoMetadata.id}.`);
       }
 
-      let metadataToUpdate = { ...updatedVideoMetadata };
-      if (newVideoFile) {
-        metadataToUpdate.fileType = newVideoFile.type; // Update fileType if new file
-      }
+      // Determine the fileType to pass to updateVideo utility
+      // If a new file is provided, use its type. Otherwise, use the existing type from metadata.
+      const fileTypeToPass = newVideoFile ? newVideoFile.type : updatedVideoMetadata.fileType;
 
-      const updatedVideo = await updateVideo(metadataToUpdate, newVideoFile);
-      let updatedVideoWithUrl = { ...updatedVideo };
+      // Call the IndexedDB update function
+      const updatedVideoFromDb = await updateVideo(updatedVideoMetadata, newVideoFile, fileTypeToPass);
+
+      let finalVideoObjectForState = { ...updatedVideoFromDb };
 
       if (newVideoFile) {
+        // If a new file was provided, create a new blob URL for it
         const newUrl = URL.createObjectURL(newVideoFile);
-        console.log(`App.js: Updated video. Created new blob URL for video ID ${updatedVideo.id}: ${newUrl} (size: ${newVideoFile.size}, type: ${newVideoFile.type})`);
-        blobUrlMap.current.set(updatedVideo.id, newUrl);
-        updatedVideoWithUrl.fileUrl = newUrl;
-        updatedVideoWithUrl.fileType = newVideoFile.type;
-      } else if (updatedVideo.fileId) { // Use updatedVideo.fileId as it might have changed
-        // If no new file, but there was an existing blob, recreate its URL
-        const existingBlob = await getVideoBlob(updatedVideo.fileId);
-        if (existingBlob && existingBlob.size > 0 && existingBlob.type) {
-          const existingUrl = URL.createObjectURL(existingBlob);
-          console.log(`App.js: Updated video. Recreated existing blob URL for video ID ${updatedVideo.id}: ${existingUrl} (size: ${existingBlob.size}, type: ${existingBlob.type})`);
-          blobUrlMap.current.set(updatedVideo.id, existingUrl);
-          updatedVideoWithUrl.fileUrl = existingUrl;
-          updatedVideoWithUrl.fileType = existingBlob.type;
-        } else {
-          console.warn(`App.js: No valid existing blob found for video ID ${updatedVideo.id} with fileId ${updatedVideo.fileId}.`);
-          updatedVideoWithUrl.fileUrl = undefined; // No valid blob found
-          updatedVideoWithUrl.fileType = undefined;
-        }
+        console.log(`App.js: Updated video. Created new blob URL for video ID ${updatedVideoFromDb.id}: ${newUrl} (size: ${newVideoFile.size}, type: ${newVideoFile.type})`);
+        blobUrlMap.current.set(updatedVideoFromDb.id, newUrl);
+        finalVideoObjectForState.fileUrl = newUrl;
+        finalVideoObjectForState.fileType = newVideoFile.type;
       } else {
-         console.warn(`App.js: No fileId present for video ID ${updatedVideo.id}.`);
-         updatedVideoWithUrl.fileUrl = undefined; // No fileId, no blob
-         updatedVideoWithUrl.fileType = undefined;
+        // If no new file was provided, try to preserve the existing fileUrl and fileType from state
+        // This is crucial for videos that were already loaded and had a valid fileUrl
+        if (existingVideoInState && existingVideoInState.fileUrl) {
+          finalVideoObjectForState.fileUrl = existingVideoInState.fileUrl;
+          finalVideoObjectForState.fileType = existingVideoInState.fileType;
+          console.log(`App.js: Updated video metadata only. Preserving existing blob URL for video ID ${updatedVideoFromDb.id}.`);
+        } else if (updatedVideoFromDb.fileId) {
+          // If no new file, but there's a fileId from DB (e.g., after initial load or re-upload)
+          // and no existing fileUrl in state, try to retrieve the blob
+          const existingBlob = await getVideoBlob(updatedVideoFromDb.fileId);
+          if (existingBlob && existingBlob.size > 0 && existingBlob.type) {
+            const existingUrl = URL.createObjectURL(existingBlob);
+            console.log(`App.js: Updated video. Recreated existing blob URL for video ID ${updatedVideoFromDb.id}: ${existingUrl} (size: ${existingBlob.size}, type: ${existingBlob.type})`);
+            blobUrlMap.current.set(updatedVideoFromDb.id, existingUrl);
+            finalVideoObjectForState.fileUrl = existingUrl;
+            finalVideoObjectForState.fileType = existingBlob.type;
+          } else {
+            console.warn(`App.js: Blob for video ID ${updatedVideoFromDb.id} with fileId ${updatedVideoFromDb.fileId} is invalid or missing during update. Setting fileUrl to undefined.`);
+            finalVideoObjectForState.fileUrl = undefined;
+            finalVideoObjectForState.fileType = undefined;
+          }
+        } else {
+           console.warn(`App.js: No fileId present in metadata for video ID ${updatedVideoFromDb.id} and no new file. Setting fileUrl to undefined.`);
+           finalVideoObjectForState.fileUrl = undefined;
+           finalVideoObjectForState.fileType = undefined;
+        }
       }
-
 
       setVideos(prevVideos => prevVideos.map(video =>
-        video.id === updatedVideoWithUrl.id ? updatedVideoWithUrl : video
+        video.id === finalVideoObjectForState.id ? finalVideoObjectForState : video
       ));
-      setSelectedVideo(updatedVideoWithUrl);
+      setSelectedVideo(finalVideoObjectForState);
       setShowForm(false);
       setEditingVideo(null);
       setShowCategoryGallery(false);
@@ -186,7 +196,6 @@ function App() {
     }
   };
 
-  // Handler for deleting a video
   const handleDeleteVideo = async (videoIdToDelete) => {
     console.log(`App.js: Attempting to delete video with ID: ${videoIdToDelete}`);
     if (!window.confirm(`Are you sure you want to delete this video?`)) {
@@ -199,9 +208,8 @@ function App() {
       const videoToDelete = videos.find(v => v.id === videoIdToDelete);
       if (videoToDelete) {
         console.log(`App.js: Found video to delete in state. Calling deleteVideo from IndexedDB utility. Video:`, videoToDelete);
-        await deleteVideo(videoIdToDelete, videoToDelete.fileId); // Delete from IndexedDB
+        await deleteVideo(videoIdToDelete, videoToDelete.fileId);
 
-        // Revoke blob URL if it exists
         if (blobUrlMap.current.has(videoIdToDelete)) {
           URL.revokeObjectURL(blobUrlMap.current.get(videoIdToDelete));
           blobUrlMap.current.delete(videoIdToDelete);
@@ -209,7 +217,7 @@ function App() {
         }
       } else {
         console.warn(`App.js: Video with ID ${videoIdToDelete} not found in state, but attempting IndexedDB delete anyway.`);
-        await deleteVideo(videoIdToDelete, null); // Try to delete from DB even if not in state
+        await deleteVideo(videoIdToDelete, null);
       }
 
 
@@ -218,6 +226,11 @@ function App() {
         if (selectedVideo && selectedVideo.id === videoIdToDelete) {
           setSelectedVideo(null);
           console.log(`App.js: Deselected video as it was the one being deleted.`);
+        }
+        // If the deleted video was the last in its category, ensure category is unselected
+        if (selectedCategory && !updatedVideos.some(v => v.category === selectedCategory)) {
+          setSelectedCategory(null);
+          setShowCategoryGallery(false); // Hide gallery if category is empty
         }
         console.log(`App.js: Video removed from state. New video count: ${updatedVideos.length}`);
         return updatedVideos;
@@ -231,7 +244,6 @@ function App() {
     }
   };
 
-  // Sort videos based on serial number (if present) or upload date
   const sortVideos = (videoList) => {
     return [...videoList].sort((a, b) => {
       let comparison = 0;
@@ -251,17 +263,25 @@ function App() {
   };
 
   const getSidebarDisplayedVideos = () => {
-    let videosToDisplay = videos;
-    if (currentView === 'videos' && selectedCategory) {
-      videosToDisplay = videosToDisplay.filter(video => video.category === selectedCategory);
+    let videosToDisplay = [];
+
+    if (currentView === 'videos') {
+      videosToDisplay = [...videos];
+      if (searchTerm) {
+        videosToDisplay = videosToDisplay.filter(video =>
+          video.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          video.category.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          (video.description && video.description.toLowerCase().includes(searchTerm.toLowerCase()))
+        );
+      }
+    } else if (currentView === 'categories') {
+      if (selectedCategory) {
+        videosToDisplay = videos.filter(video => video.category === selectedCategory);
+      } else {
+        videosToDisplay = [];
+      }
     }
-    if (searchTerm) {
-      videosToDisplay = videosToDisplay.filter(video =>
-        video.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        video.category.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        (video.description && video.description.toLowerCase().includes(searchTerm.toLowerCase()))
-      );
-    }
+
     return sortVideos(videosToDisplay);
   };
 
@@ -281,10 +301,16 @@ function App() {
   const filteredCategories = getFilteredCategories();
 
   const handleShowCategoryGallery = (category) => {
-    setSelectedCategory(category);
-    setShowCategoryGallery(true);
-    setSelectedVideo(null);
-    setShowForm(false);
+    if (selectedCategory === category) {
+      setSelectedCategory(null);
+      setShowCategoryGallery(false);
+      setSelectedVideo(null);
+    } else {
+      setSelectedCategory(category);
+      setShowCategoryGallery(true);
+      setSelectedVideo(null);
+      setShowForm(false);
+    }
   };
 
   const handleSelectVideoFromGallery = (video) => {
@@ -292,6 +318,21 @@ function App() {
     setShowCategoryGallery(false);
     setShowForm(false);
   };
+
+  const handleSetView = (view) => {
+    setCurrentView(view);
+    if (view === 'videos') {
+      setSelectedCategory(null);
+      setShowCategoryGallery(false);
+    } else { // view === 'categories'
+      if (!selectedCategory) {
+        setShowCategoryGallery(false);
+      }
+    }
+    setSelectedVideo(null);
+    setShowForm(false);
+  };
+
 
   return (
     <div className="app-container">
@@ -309,7 +350,7 @@ function App() {
             searchTerm={searchTerm}
             onSearchChange={setSearchTerm}
             currentView={currentView}
-            onSetView={setCurrentView}
+            onSetView={handleSetView}
             uniqueCategories={filteredCategories}
             categorySearchTerm={categorySearchTerm}
             onCategorySearchChange={setCategorySearchTerm}
@@ -318,6 +359,9 @@ function App() {
             sortOrder={sortOrder}
             onToggleSortOrder={() => setSortOrder(prev => prev === 'newest' ? 'oldest' : 'newest')}
             isLoading={isLoading}
+            allVideos={videos}
+            setSelectedVideo={setSelectedVideo}
+            setShowCategoryGallery={setShowCategoryGallery}
           />
         </aside>
 

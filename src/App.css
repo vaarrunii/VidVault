@@ -36,12 +36,13 @@
 /* Basic reset for body and root element */
 body {
   margin: 0;
-  font-family: 'DM Sans', sans-serif; /* Changed to DM Sans */
+  font-family: 'DM Sans', sans-serif;
   background-color: var(--color-background-light);
   color: var(--color-text-dark);
-  line-height: 1.5;
+  line-height: 1.4; /* Slightly reduced line height */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  font-size: 14px; /* Base font size */
 }
 
 #root {
@@ -58,7 +59,7 @@ body {
 
 .app-header {
   background-color: var(--color-background-paper);
-  padding: 10px 20px;
+  padding: 8px 15px; /* Slightly reduced padding */
   color: var(--color-text-dark);
   text-align: center;
   box-shadow: 0 1px 3px var(--shadow-subtle);
@@ -68,8 +69,8 @@ body {
 
 .app-header h1 {
   margin: 0;
-  font-family: 'DM Sans', sans-serif; /* Changed to DM Sans */
-  font-size: 1.6em;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 1.4em; /* Reduced font size */
   font-weight: 700;
   letter-spacing: 0.02em;
 }
@@ -88,7 +89,7 @@ body {
   background-color: var(--color-background-paper);
   border-radius: var(--border-radius-lg);
   box-shadow: 0 4px 12px var(--shadow-medium);
-  overflow-y: auto;
+  overflow-y: scroll !important; /* FORCED SCROLLBAR FOR DEBUGGING */
   padding: 0;
   box-sizing: border-box;
   border: 1px solid var(--color-border);
@@ -100,14 +101,51 @@ body {
   border-radius: var(--border-radius-lg);
   box-shadow: 0 4px 12px var(--shadow-medium);
   padding: 0;
-  overflow-y: auto;
+  overflow-y: scroll !important; /* FORCED SCROLLBAR FOR DEBUGGING */
   display: flex;
   align-items: flex-start;
   justify-content: flex-start;
   border: 1px solid var(--color-border);
 }
 
+/* Scrollbar Styling (Webkit - Chrome, Safari) - Made more prominent for debugging */
+::-webkit-scrollbar {
+  width: 12px !important; /* Wider scrollbar */
+  height: 12px !important;
+}
+
+::-webkit-scrollbar-track {
+  background: #f0f0f0 !important; /* Lighter track */
+  border-radius: 10px !important;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #FF5722 !important; /* Bright orange for visibility */
+  border-radius: 10px !important;
+  border: 3px solid #f0f0f0 !important; /* Creates a slight border effect */
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #E64A19 !important; /* Darker orange on hover */
+}
+
+/* Firefox Scrollbar Styling - Made more prominent for debugging */
+* {
+  scrollbar-width: thin !important; /* 'auto' or 'thin' */
+  scrollbar-color: #FF5722 #f0f0f0 !important; /* thumb color track color */
+}
+
+
 @media (max-width: 768px) {
+  body {
+    font-size: 13px; /* Smaller base font for mobile */
+  }
+  .app-header {
+    padding: 6px 10px;
+  }
+  .app-header h1 {
+    font-size: 1.1em;
+  }
   .content-area {
     flex-direction: column;
     padding: 8px;
@@ -124,10 +162,6 @@ body {
     height: 250px;
     box-shadow: 0 2px 8px var(--shadow-medium);
   }
-
-  .app-header h1 {
-    font-size: 1.2em;
-  }
 }
 
 /* Loading Spinner (kept for App.js loading state) */
@@ -137,7 +171,7 @@ body {
   align-items: center;
   height: 100%;
   font-family: 'DM Sans', sans-serif;
-  font-size: 1.2em;
+  font-size: 1.1em; /* Reduced font size */
   color: var(--color-text-medium);
   font-weight: 500;
 }

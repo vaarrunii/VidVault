@@ -1,27 +1,46 @@
 // src/utils/indexedDb.js
+import { v4 as uuidv4 } from 'uuid';
 
 const DB_NAME = 'VidVaultDB';
-const DB_VERSION = 1;
-const STORE_NAME = 'videos';
+// IMPORTANT: DB_VERSION remains 3. No new schema change, just logic fix.
+const DB_VERSION = 3; 
+const VIDEO_STORE_NAME = 'videos';
+const BLOB_STORE_NAME = 'videoBlobs';
 
-let db;
+let db = null;
 
-// Function to open the IndexedDB database
+// Open (or create) the IndexedDB database
 export const openDatabase = () => {
   return new Promise((resolve, reject) => {
+    if (db) {
+      resolve(db);
+      return;
+    }
+
     const request = indexedDB.open(DB_NAME, DB_VERSION);
 
     request.onupgradeneeded = (event) => {
-      // This event is fired when the database is first created or when the version is incremented.
+      console.log("IndexedDB: Upgrade needed or database created. Version:", event.oldVersion, "->", event.newVersion);
       db = event.target.result;
-      if (!db.objectStoreNames.contains(STORE_NAME)) {
-        // Create an object store to hold our videos.
-        // We'll use 'id' as the keyPath for video metadata, and 'fileId' for the actual blob.
-        // The 'fileId' will be generated and used as the primary key for the blob store.
-        db.createObjectStore(STORE_NAME, { keyPath: 'id' });
-        db.createObjectStore('videoBlobs', { keyPath: 'fileId' }); // Store actual video blobs
-        console.log("IndexedDB: Object stores created/upgraded.");
+
+      // Create object store for video metadata
+      if (!db.objectStoreNames.contains(VIDEO_STORE_NAME)) {
+        const videoStore = db.createObjectStore(VIDEO_STORE_NAME, { keyPath: 'id' });
+        videoStore.createIndex('category', 'category', { unique: false });
+        videoStore.createIndex('uploadDate', 'uploadDate', { unique: false });
+        videoStore.createIndex('serialNumber', 'serialNumber', { unique: false });
+        console.log(`IndexedDB: Object store '${VIDEO_STORE_NAME}' created.`);
       }
+
+      // Create or clear object store for video blobs (actual files)
+      if (db.objectStoreNames.contains(BLOB_STORE_NAME)) {
+        // If the store exists, delete it to apply new schema/clear old data
+        db.deleteObjectStore(BLOB_STORE_NAME);
+        console.log(`IndexedDB: Existing object store '${BLOB_STORE_NAME}' deleted for upgrade.`);
+      }
+      // Create the blob store with the new structure
+      db.createObjectStore(BLOB_STORE_NAME, { keyPath: 'id' });
+      console.log(`IndexedDB: Object store '${BLOB_STORE_NAME}' created with new schema.`);
     };
 
     request.onsuccess = (event) => {
@@ -31,49 +50,75 @@ export const openDatabase = () => {
     };
 
     request.onerror = (event) => {
-      console.error("IndexedDB: Error opening database:", event.target.errorCode, event.target.error);
-      reject("Error opening database");
+      console.error("IndexedDB: Database error:", event.target.error);
+      reject(event.target.error);
     };
   });
 };
 
-// Function to add video metadata and its blob to IndexedDB
-export const addVideo = async (videoMetadata, videoBlob) => {
-  if (!db) {
-    db = await openDatabase();
+// Helper function to read File into ArrayBuffer
+const readFileAsArrayBuffer = (file) => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = () => reject(reader.error);
+    reader.readAsArrayBuffer(file);
+  });
+};
+
+// Add a new video (metadata and blob)
+export const addVideo = async (metadata, videoFile) => {
+  await openDatabase(); // Ensure db is open
+
+  // Read the file into ArrayBuffer BEFORE starting the transaction
+  let arrayBuffer;
+  try {
+    arrayBuffer = await readFileAsArrayBuffer(videoFile);
+  } catch (error) {
+    console.error("IndexedDB: Error reading video file as ArrayBuffer before transaction:", error);
+    throw error; // Re-throw to be caught by App.js
   }
 
+  const transaction = db.transaction([VIDEO_STORE_NAME, BLOB_STORE_NAME], 'readwrite');
+  const videoStore = transaction.objectStore(VIDEO_STORE_NAME);
+  const blobStore = transaction.objectStore(BLOB_STORE_NAME);
+
   return new Promise((resolve, reject) => {
-    const transaction = db.transaction([STORE_NAME, 'videoBlobs'], 'readwrite');
-    const videoStore = transaction.objectStore(STORE_NAME);
-    const blobStore = transaction.objectStore('videoBlobs');
+    const fileId = uuidv4(); // Generate a unique ID for the blob
+    
+    const blobData = {
+      id: fileId,
+      arrayBuffer: arrayBuffer,
+      type: videoFile.type,
+      size: videoFile.size
+    };
 
-    // Generate a unique ID for the blob
-    const fileId = `${videoMetadata.id}-blob`;
-
-    console.log(`IndexedDB: Attempting to add blob for ${videoMetadata.id} (size: ${videoBlob.size}, type: ${videoBlob.type})`);
-    // Store the actual video blob
-    const blobRequest = blobStore.add({ fileId, blob: videoBlob });
-
+    // Store the blob data (ArrayBuffer + type + size)
+    const blobRequest = blobStore.add(blobData);
     blobRequest.onsuccess = () => {
-      console.log(`IndexedDB: Blob added successfully for ${fileId}.`);
-      // Store the video metadata, referencing the blob by its fileId
-      const metadataToStore = { ...videoMetadata, fileId: fileId };
-      const metadataRequest = videoStore.add(metadataToStore);
+      console.log(`IndexedDB: Blob data added successfully with ID: ${fileId}`);
+      // Update metadata with the generated fileId and fileType
+      const newMetadata = { 
+        ...metadata, 
+        fileId, 
+        fileType: videoFile.type, 
+        id: metadata.id || uuidv4() 
+      };
+      const videoRequest = videoStore.add(newMetadata);
 
-      metadataRequest.onsuccess = () => {
-        console.log(`IndexedDB: Metadata added successfully for ${videoMetadata.id}.`);
-        resolve(metadataToStore);
+      videoRequest.onsuccess = () => {
+        console.log("IndexedDB: Metadata added successfully.");
+        resolve(newMetadata);
       };
 
-      metadataRequest.onerror = (event) => {
+      videoRequest.onerror = (event) => {
         console.error("IndexedDB: Error adding video metadata:", event.target.error);
         reject(event.target.error);
       };
     };
 
     blobRequest.onerror = (event) => {
-      console.error("IndexedDB: Error adding video blob:", event.target.error);
+      console.error("IndexedDB: Error adding video blob data:", event.target.error);
       reject(event.target.error);
     };
 
@@ -82,101 +127,128 @@ export const addVideo = async (videoMetadata, videoBlob) => {
     };
 
     transaction.onerror = (event) => {
-      console.error("IndexedDB: Transaction error during add:", event.target.error);
+      console.error("IndexedDB: Add transaction error:", event.target.error);
       reject(event.target.error);
     };
   });
 };
 
-// Function to update video metadata and its blob in IndexedDB
-export const updateVideo = async (videoMetadata, videoBlob) => {
-  if (!db) {
-    db = await openDatabase();
+// Update an existing video (metadata and optionally replace blob)
+export const updateVideo = async (metadata, newVideoFile, fileTypeToPass) => {
+  await openDatabase();
+
+  let updatedMetadata = { ...metadata };
+  let newBlobData = null;
+
+  // Read the new file into ArrayBuffer BEFORE starting the transaction
+  if (newVideoFile) {
+    try {
+      const arrayBuffer = await readFileAsArrayBuffer(newVideoFile);
+      const newFileId = uuidv4();
+      newBlobData = {
+        id: newFileId,
+        arrayBuffer: arrayBuffer,
+        type: newVideoFile.type,
+        size: newVideoFile.size
+      };
+      updatedMetadata.fileId = newFileId; // Update metadata with new fileId immediately
+      updatedMetadata.fileType = newVideoFile.type; // Update fileType immediately
+    } catch (error) {
+      console.error("IndexedDB: Error reading new video file as ArrayBuffer before transaction:", error);
+      throw error; // Re-throw to be caught by App.js
+    }
+  } else if (fileTypeToPass) {
+    // If no newVideoFile, ensure fileType is carried over from existing metadata
+    updatedMetadata.fileType = fileTypeToPass;
   }
 
+  const transaction = db.transaction([VIDEO_STORE_NAME, BLOB_STORE_NAME], 'readwrite');
+  const videoStore = transaction.objectStore(VIDEO_STORE_NAME);
+  const blobStore = transaction.objectStore(BLOB_STORE_NAME);
+
   return new Promise((resolve, reject) => {
-    const transaction = db.transaction([STORE_NAME, 'videoBlobs'], 'readwrite');
-    const videoStore = transaction.objectStore(STORE_NAME);
-    const blobStore = transaction.objectStore('videoBlobs');
+    const performBlobOperations = async () => {
+      if (newVideoFile) {
+        // Step 1: Delete the old blob if it exists
+        if (metadata.fileId) { // Use original metadata.fileId for deletion
+          try {
+            await new Promise((res, rej) => {
+              const deleteRequest = blobStore.delete(metadata.fileId);
+              deleteRequest.onsuccess = () => {
+                console.log(`IndexedDB: Old blob ${metadata.fileId} deleted.`);
+                res();
+              };
+              deleteRequest.onerror = (event) => {
+                console.warn(`IndexedDB: Could not delete old blob ${metadata.fileId}. It might not exist. Error:`, event.target.error);
+                res();
+              };
+            });
+          } catch (error) {
+            console.error(`IndexedDB: Unexpected error during old blob deletion for ${metadata.fileId}:`, error);
+          }
+        }
 
-    // If a new blob is provided, delete the old one and add the new one
-    if (videoBlob) {
-      console.log(`IndexedDB: Attempting to update blob for ${videoMetadata.id} (new size: ${videoBlob.size}, new type: ${videoBlob.type})`);
-      // Delete old blob if it exists
-      if (videoMetadata.fileId) {
-        const deleteBlobRequest = blobStore.delete(videoMetadata.fileId);
-        deleteBlobRequest.onsuccess = () => console.log(`IndexedDB: Old blob deleted for ${videoMetadata.fileId}.`);
-        deleteBlobRequest.onerror = (event) => {
-          console.warn("IndexedDB: Could not delete old blob (might not exist):", event.target.error);
-        };
+        // Step 2: Add the new blob data
+        try {
+          await new Promise((res, rej) => {
+            const addRequest = blobStore.add(newBlobData); // Use the pre-read newBlobData
+            addRequest.onsuccess = () => {
+              console.log(`IndexedDB: New blob data added successfully with ID: ${newBlobData.id}`);
+              res();
+            };
+            addRequest.onerror = (event) => {
+              console.error("IndexedDB: Error adding new video blob data:", event.target.error);
+              rej(event.target.error);
+            };
+          });
+        } catch (error) {
+          console.error("IndexedDB: Failed to add new blob data after deletion attempt:", error);
+          throw error;
+        }
       }
+    };
 
-      // Add new blob
-      const newFileId = `${videoMetadata.id}-blob`;
-      const addBlobRequest = blobStore.add({ fileId: newFileId, blob: videoBlob });
-
-      addBlobRequest.onsuccess = () => {
-        console.log(`IndexedDB: New blob added successfully for ${newFileId}.`);
-        // Update metadata with new fileId
-        const metadataToUpdate = { ...videoMetadata, fileId: newFileId };
-        const updateMetadataRequest = videoStore.put(metadataToUpdate); // Use put for update
-
-        updateMetadataRequest.onsuccess = () => {
-          console.log(`IndexedDB: Metadata updated successfully for ${videoMetadata.id} with new blob.`);
-          resolve(metadataToUpdate);
+    performBlobOperations()
+      .then(() => {
+        // Step 3: Update video metadata in the video store
+        const videoRequest = videoStore.put(updatedMetadata);
+        videoRequest.onsuccess = () => {
+          console.log("IndexedDB: Metadata updated successfully for", updatedMetadata.id);
+          resolve(updatedMetadata);
         };
-        updateMetadataRequest.onerror = (event) => {
-          console.error("IndexedDB: Error updating video metadata with new blob:", event.target.error);
+        videoRequest.onerror = (event) => {
+          console.error("IndexedDB: Error updating video metadata:", event.target.error);
           reject(event.target.error);
         };
-      };
-      addBlobRequest.onerror = (event) => {
-        console.error("IndexedDB: Error adding new blob during update:", event.target.error);
-        reject(event.target.error);
-      };
-    } else {
-      console.log(`IndexedDB: No new blob provided for update of ${videoMetadata.id}, only updating metadata.`);
-      // If no new blob, just update metadata
-      const updateMetadataRequest = videoStore.put(videoMetadata); // Use put for update
-
-      updateMetadataRequest.onsuccess = () => {
-        console.log(`IndexedDB: Metadata updated successfully for ${videoMetadata.id} (no new blob).`);
-        resolve(videoMetadata);
-      };
-      updateMetadataRequest.onerror = (event) => {
-        console.error("IndexedDB: Error updating video metadata without new blob:", event.target.error);
-        reject(event.target.error);
-      };
-    }
+      })
+      .catch(error => {
+        console.error("IndexedDB: Error during video update process (blob handling failed):", error);
+        reject(error);
+      });
 
     transaction.oncomplete = () => {
       console.log("IndexedDB: Update transaction completed.");
     };
 
     transaction.onerror = (event) => {
-      console.error("IndexedDB: Transaction error during update:", event.target.error);
+      console.error("IndexedDB: Update transaction error:", event.target.error);
       reject(event.target.error);
     };
   });
 };
 
 
-// Function to get all video metadata from IndexedDB
+// Get all video metadata
 export const getAllVideoMetadata = async () => {
-  if (!db) {
-    db = await openDatabase();
-  }
+  await openDatabase();
+  const transaction = db.transaction([VIDEO_STORE_NAME], 'readonly');
+  const store = transaction.objectStore(VIDEO_STORE_NAME);
+  const request = store.getAll();
 
   return new Promise((resolve, reject) => {
-    const transaction = db.transaction([STORE_NAME], 'readonly');
-    const store = transaction.objectStore(STORE_NAME);
-    const request = store.getAll();
-
     request.onsuccess = (event) => {
-      console.log("IndexedDB: All video metadata retrieved.");
       resolve(event.target.result);
     };
-
     request.onerror = (event) => {
       console.error("IndexedDB: Error getting all video metadata:", event.target.error);
       reject(event.target.error);
@@ -184,73 +256,68 @@ export const getAllVideoMetadata = async () => {
   });
 };
 
-// Function to get a specific video blob by its fileId
+// Get a video blob by its fileId
 export const getVideoBlob = async (fileId) => {
-  if (!db) {
-    db = await openDatabase();
-  }
+  await openDatabase();
+  const transaction = db.transaction([BLOB_STORE_NAME], 'readonly');
+  const store = transaction.objectStore(BLOB_STORE_NAME);
+  const request = store.get(fileId);
 
   return new Promise((resolve, reject) => {
-    const transaction = db.transaction(['videoBlobs'], 'readonly');
-    const store = transaction.objectStore('videoBlobs');
-    const request = store.get(fileId);
-
     request.onsuccess = (event) => {
-      const result = event.target.result;
-      if (result && result.blob) {
-        console.log(`IndexedDB: Blob retrieved for ${fileId} (size: ${result.blob.size}, type: ${result.blob.type}).`);
-        resolve(result.blob);
+      const blobData = event.target.result;
+      if (blobData && blobData.arrayBuffer && blobData.type) {
+        // Reconstruct Blob object from stored ArrayBuffer and type
+        const blob = new Blob([blobData.arrayBuffer], { type: blobData.type });
+        console.log(`IndexedDB: Blob retrieved for ${fileId} (size: ${blob.size}, type: ${blob.type}).`);
+        resolve(blob);
       } else {
-        console.warn(`IndexedDB: Blob not found or invalid for ${fileId}. Result:`, result);
-        resolve(null); // Blob not found
+        console.warn(`IndexedDB: No valid blob data found for fileId: ${fileId}.`);
+        resolve(null); // Resolve with null if blob data not found or invalid
       }
     };
-
     request.onerror = (event) => {
-      console.error("IndexedDB: Error getting video blob:", event.target.error);
+      console.error("IndexedDB: Error getting video blob data:", event.target.error);
       reject(event.target.error);
     };
   });
 };
 
-// Function to delete video metadata and its blob from IndexedDB
+// Delete a video (metadata and blob)
 export const deleteVideo = async (videoId, fileId) => {
-  if (!db) {
-    db = await openDatabase();
-  }
+  await openDatabase();
+  const transaction = db.transaction([VIDEO_STORE_NAME, BLOB_STORE_NAME], 'readwrite');
+  const videoStore = transaction.objectStore(VIDEO_STORE_NAME);
+  const blobStore = transaction.objectStore(BLOB_STORE_NAME);
 
   return new Promise((resolve, reject) => {
-    const transaction = db.transaction([STORE_NAME, 'videoBlobs'], 'readwrite');
-    const videoStore = transaction.objectStore(STORE_NAME);
-    const blobStore = transaction.objectStore('videoBlobs');
-
-    const deleteMetadataRequest = videoStore.delete(videoId);
-    deleteMetadataRequest.onsuccess = () => {
-      console.log(`IndexedDB: Video metadata deleted for ${videoId}.`);
+    const deleteVideoMetadata = videoStore.delete(videoId);
+    deleteVideoMetadata.onsuccess = () => {
+      console.log(`IndexedDB: Video metadata deleted for ID: ${videoId}`);
     };
-    deleteMetadataRequest.onerror = (event) => {
-      console.error("IndexedDB: Error deleting video metadata:", event.target.error);
-      reject(event.target.error);
+    deleteVideoMetadata.onerror = (event) => {
+      console.error(`IndexedDB: Error deleting video metadata for ID: ${videoId}`, event.target.error);
     };
 
     if (fileId) {
-      const deleteBlobRequest = blobStore.delete(fileId);
-      deleteBlobRequest.onsuccess = () => {
-        console.log(`IndexedDB: Video blob deleted for ${fileId}.`);
+      const deleteVideoBlob = blobStore.delete(fileId);
+      deleteVideoBlob.onsuccess = () => {
+        console.log(`IndexedDB: Video blob deleted for fileId: ${fileId}`);
       };
-      deleteBlobRequest.onerror = (event) => {
-        console.error("IndexedDB: Error deleting video blob:", event.target.error);
-        reject(event.target.error);
+      deleteVideoBlob.onerror = (event) => {
+        console.warn(`IndexedDB: Could not delete video blob for fileId: ${fileId}. It might not exist. Error:`, event.target.error);
       };
+    } else {
+      console.warn(`IndexedDB: No fileId provided for video ID: ${videoId}. Skipping blob deletion.`);
     }
 
     transaction.oncomplete = () => {
-      console.log("IndexedDB: Delete transaction completed.");
+      console.log(`IndexedDB: Delete transaction completed for video ID: ${videoId}.`);
       resolve();
     };
 
     transaction.onerror = (event) => {
-      console.error("IndexedDB: Transaction error during delete:", event.target.error);
+      console.error(`IndexedDB: Delete transaction error for video ID: ${videoId}`, event.target.error);
       reject(event.target.error);
     };
   });

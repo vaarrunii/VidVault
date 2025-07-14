@@ -16,7 +16,7 @@
 .gallery-title {
   font-family: 'DM Sans', sans-serif;
   color: var(--color-text-dark);
-  font-size: 1.6em;
+  font-size: 1.3em; /* REDUCED FONT SIZE */
   font-weight: 700;
   margin-top: 0;
   margin-bottom: 20px;
@@ -29,7 +29,7 @@
   grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
   gap: 20px;
   width: 100%;
-  overflow-y: auto;
+  overflow-y: scroll !important; /* FORCED SCROLLBAR FOR DEBUGGING */
   padding-bottom: 20px;
   flex-grow: 1;
 }
@@ -152,6 +152,7 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
+  /* gap: 6px; REMOVED GAP TO CONTROL SPACING MANUALLY */
   flex-grow: 1;
   justify-content: space-between; /* Distribute space */
 }
@@ -227,7 +228,7 @@
     padding: 15px;
   }
   .gallery-title {
-    font-size: 1.3em;
+    font-size: 1.1em; /* FURTHER REDUCED FOR MOBILE */
     margin-bottom: 15px;
   }
   .category-gallery {
