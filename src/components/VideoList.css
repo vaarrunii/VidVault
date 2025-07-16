@@ -2,169 +2,304 @@
 /* Styles for the video list, search bar, and upload button */
 
 .video-list {
-  padding: 12px;
-  background-color: var(--color-background-paper);
+  padding: 0; /* Removed all padding from the main container to eliminate side white space */
+  background-color: var(--color-background-panel);
   display: flex;
   flex-direction: column;
-  height: 100%; /* Ensure it takes full height of its parent */
+  height: 100%; /* Ensure video-list takes full height of its parent (sidebar) */
   box-sizing: border-box;
+  /* No padding-bottom or margin-bottom here to ensure it covers to the very bottom */
 }
 
-/* Removed .video-list.collapsed styles */
+/* New container for the upload button at the very top */
+.upload-button-container {
+  width: 100%; /* Take full width to allow internal alignment */
+  display: flex;
+  justify-content: flex-end; /* Align button to the right */
+  margin-bottom: 15px; /* Space below the button */
+  padding-right: 10px; /* Add some padding from the right edge */
+  padding-left: 10px; /* Add consistent padding on left */
+  box-sizing: border-box; /* Include padding in width */
+  flex-shrink: 0; /* Prevent container from shrinking */
+}
+
+/* Upload Button Styling (Made EXTREMELY Small and integrated) */
+.upload-button {
+  height: 24px; /* Drastically reduced height */
+  padding: 0 8px; /* Reduced horizontal padding, vertical handled by height */
+  background-color: var(--color-primary-main); /* Blue background */
+  color: var(--color-text-white); /* White text */
+  border: none;
+  border-radius: var(--border-radius-md); /* Slightly less rounded for smaller size */
+  font-family: 'Inter', sans-serif;
+  font-size: 0.7em; /* Even smaller font size */
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease;
+  box-shadow: 0 1px 3px rgba(102, 137, 255, 0.2); /* Subtle blue shadow */
+  flex-shrink: 0; /* Prevent shrinking */
+  white-space: nowrap; /* Prevent text wrapping */
+  display: flex; /* Use flex to center content if needed */
+  align-items: center; /* Vertically center text */
+  justify-content: center; /* Horizontally center text */
+  width: fit-content; /* Ensure it only takes content width */
+}
+
+.upload-button:hover {
+  background-color: var(--color-primary-dark); /* Darker blue on hover */
+  transform: translateY(-1px); /* Slight lift effect */
+  box-shadow: 0 2px 5px rgba(102, 137, 255, 0.3); /* Enhanced shadow on hover */
+}
+
+.upload-button:active {
+  transform: translateY(0); /* Press down effect */
+  box-shadow: 0 1px 2px rgba(102, 137, 255, 0.2); /* Reduced shadow on active */
+}
+
 
 .list-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 12px;
+  margin-bottom: 15px;
   width: 100%;
   flex-shrink: 0;
+  padding-right: 10px; /* Add padding to the right for search icon alignment */
+  padding-left: 10px; /* Add consistent padding on left */
+  box-sizing: border-box;
 }
 
 .sidebar-title {
   margin: 0;
-  font-family: 'DM Sans', sans-serif;
-  color: var(--color-text-dark);
-  font-size: 1.1em;
+  font-family: 'Inter', sans-serif;
+  color: var(--color-text-primary);
+  font-size: 1.5em; /* Increased font size for prominence */
   font-weight: 700;
   display: flex;
   align-items: center;
-  /* Removed gap for toggle icon */
+  flex-shrink: 0;
+  /* Removed padding-left here as it's now on list-header */
 }
 
-/* Removed sidebar-toggle-button styles */
-
-.upload-button {
-  background-color: var(--color-primary-medium);
-  color: var(--color-text-white);
-  padding: 5px 10px;
+/* New Search Toggle Button (Magnifying Glass) - Adjusted for exact screenshot match */
+.search-toggle-button {
+  background-color: transparent;
   border: none;
-  border-radius: var(--border-radius-md);
   cursor: pointer;
-  font-family: 'DM Sans', sans-serif;
-  font-size: 0.75em;
-  font-weight: 600;
-  letter-spacing: 0.01em;
-  white-space: nowrap;
-  transition: background-color 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease;
-  box-shadow: 0 2px 6px rgba(33, 150, 243, 0.3);
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px; /* Slightly smaller icon button */
+  height: 30px; /* Slightly smaller icon button */
+  border-radius: 50%;
+  color: var(--color-primary-main); /* Blue icon color from screenshot */
+  transition: background-color 0.2s ease, transform 0.1s ease;
+  margin-left: auto; /* Push to the right */
+  margin-right: 0;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 10;
+  pointer-events: auto;
 }
 
-.upload-button:hover {
-  background-color: var(--color-primary-dark);
+.search-toggle-button:hover {
+  background-color: rgba(102, 137, 255, 0.1);
   transform: translateY(-1px);
-  box-shadow: 0 4px 8px rgba(25, 118, 210, 0.4);
 }
 
-.upload-button:active {
+.search-toggle-button:active {
   transform: translateY(0);
-  box-shadow: 0 1px 3px rgba(33, 150, 243, 0.3);
+}
+
+.search-toggle-button svg {
+  width: 18px; /* Adjusted icon size */
+  height: 18px; /* Adjusted icon size */
+}
+
+/* Expanded Global Search Input Container - Adjusted for screenshot */
+.global-search-input-container {
+  display: flex;
+  align-items: center;
+  flex-grow: 1;
+  margin-left: 15px;
+  margin-right: 10px;
+  max-width: 250px;
+  background-color: var(--color-background-panel);
+  border-radius: var(--border-radius-lg);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  position: relative;
+  z-index: 5;
+  padding: 5px 10px;
+  box-sizing: border-box;
+  gap: 8px;
+}
+
+.global-search-input-expanded {
+  flex-grow: 1;
+  padding: 5px 8px;
+  border-radius: var(--border-radius-lg);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.9em;
+  box-sizing: border-box;
+  height: 30px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  -webkit-appearance: none !important;
+  -moz-appearance: none !important;
+  appearance: none !important;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  background-color: var(--color-search-input-bg) !important;
+  color: var(--color-text-primary) !important;
+  border-image: none !important;
+  text-decoration: none !important;
+  cursor: text !important;
+  user-select: text !important;
+  &::-ms-clear {
+    display: none;
+  }
+  &::-webkit-search-decoration,
+  &::-webkit-search-cancel-button,
+  &::-webkit-search-results-button,
+  &::-webkit-search-results-decoration {
+    display: none;
+  }
+  max-width: calc(100% - 36px - 8px);
+}
+
+.global-search-input-expanded::placeholder {
+  color: var(--color-text-medium);
+}
+
+.global-search-input-expanded:focus {
+  outline: none;
+  border-color: var(--color-primary-main);
+  box-shadow: 0 0 0 3px rgba(102, 137, 255, 0.4);
+}
+
+
+/* Container for view toggle only - Adjusted for exact screenshot match & horizontal elongation */
+.view-toggle-container {
+  display: flex;
+  justify-content: flex-start; /* Align to the left to match screenshot */
+  margin-bottom: 25px; /* Significantly increased margin-bottom for more white space below the toggle */
+  width: 100%;
+  flex-shrink: 0;
+  padding-left: 10px; /* Match the new overall padding of the sidebar */
+  padding-right: 10px; /* Match the new overall padding of the sidebar */
+  box-sizing: border-box; /* Include padding in width */
 }
 
 .view-toggle {
   display: flex;
-  margin-bottom: 12px;
-  border: 1px solid var(--color-border);
-  border-radius: var(--border-radius-md);
+  width: 100%; /* Make it take full width of its container (horizontally elongated) */
+  background-color: var(--color-background-subtle); /* Inactive background is subtle grey */
+  border: 1px solid var(--color-border-light); /* Light grey border */
+  border-radius: var(--border-radius-md); /* Consistent rounded corners */
   overflow: hidden;
-  box-shadow: inset 0 1px 3px var(--shadow-subtle);
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.05); /* Subtle inner shadow */
   flex-shrink: 0;
+  height: 32px; /* Keep vertical size small */
 }
 
 .view-toggle .toggle-button {
-  flex: 1;
-  padding: 7px 0;
-  background-color: var(--color-background-hover);
-  color: var(--color-text-medium);
+  flex: 1; /* Allow buttons to grow and fill space within view-toggle */
+  padding: 5px 0; /* Vertical padding, horizontal will be handled by flex-grow */
+  background-color: transparent;
+  color: var(--color-text-medium); /* Default grey text color */
   border: none;
-  font-family: 'DM Sans', sans-serif;
-  font-size: 0.8em;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.9em;
   font-weight: 600;
   cursor: pointer;
   transition: background-color 0.2s ease, color 0.2s ease;
   text-align: center;
+  white-space: nowrap;
 }
+
+/* Specific styles for the active toggle button - Exact match to screenshot */
+.view-toggle .toggle-button.active {
+  background-color: #6689FF; /* Directly using the blue from the screenshot */
+  color: #FFFFFF; /* White text for active */
+  box-shadow: none; /* Remove inner shadow for cleaner look */
+}
+
+/* Apply border-radius to active button based on its position */
+.view-toggle .toggle-button.active:first-child {
+  border-top-left-radius: var(--border-radius-md);
+  border-bottom-left-radius: var(--border-radius-md);
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.view-toggle .toggle-button.active:last-child {
+  border-top-right-radius: var(--border-radius-md);
+  border-bottom-right-radius: var(--border-radius-md);
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+/* Ensure inactive buttons have no specific border-radius beyond the parent's */
+.view-toggle .toggle-button:not(.active) {
+  border-radius: 0;
+}
+
 
 .view-toggle .toggle-button:not(:last-child) {
-  border-right: 1px solid var(--color-border);
-}
-
-.view-toggle .toggle-button.active {
-  background-color: var(--color-primary-medium);
-  color: var(--color-text-white);
-  box-shadow: inset 0 0 5px rgba(33, 150, 243, 0.4);
+  border-right: 1px solid var(--color-border-light); /* Separator border */
 }
 
 .view-toggle .toggle-button:hover:not(.active) {
   background-color: var(--color-background-hover);
-  color: var(--color-text-dark);
+  color: var(--color-text-primary);
 }
 
-.search-sort-container {
+/* Sort button container and styling */
+.sort-indicator-container {
   display: flex;
-  gap: 8px;
-  margin-bottom: 12px;
   align-items: center;
-  flex-shrink: 0;
-}
-
-.search-input {
-  flex-grow: 1;
-  padding: 3px 7px !important;
-  border: 1px solid var(--color-border);
-  border-radius: var(--border-radius-md);
-  font-family: 'DM Sans', sans-serif !important;
-  font-size: 0.7em !important;
-  box-sizing: border-box !important;
-  background-color: var(--color-background-subtle);
-  box-shadow: inset 0 1px 2px var(--shadow-subtle);
-  transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
-  color: var(--color-text-dark);
-  height: 26px !important;
-  min-height: 26px !important;
-  max-height: 26px !important;
-  line-height: 1.5 !important;
-  appearance: none !important;
-  -webkit-appearance: none !important;
-  -moz-appearance: none !important;
-}
-
-.search-input::placeholder {
-  color: var(--color-text-light);
-}
-
-.search-input:focus {
-  outline: none;
-  border-color: var(--color-primary-medium);
-  box-shadow: 0 0 0 2px rgba(33, 150, 243, 0.3);
-  background-color: var(--color-background-paper);
-}
-
-.sort-button {
-  background-color: var(--color-background-subtle);
-  color: var(--color-text-medium);
-  padding: 3px 7px !important;
-  border: 1px solid var(--color-border);
-  border-radius: var(--border-radius-md);
+  justify-content: flex-start;
   cursor: pointer;
-  font-family: 'DM Sans', sans-serif !important;
-  font-size: 0.7em !important;
-  font-weight: 600;
-  transition: background-color 0.2s ease, box-shadow 0.2s ease;
-  box-shadow: 0 1px 3px var(--shadow-subtle);
-  white-space: nowrap;
-  height: 26px !important;
-  min-height: 26px !important;
-  max-height: 26px !important;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  margin-bottom: 5px; /* Reduced margin-bottom to eliminate white space */
+  padding: 5px 0;
+  color: var(--color-text-medium);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.9em;
+  font-weight: 500;
+  transition: color 0.2s ease;
+  width: 100%;
+  padding-left: 10px; /* Align with new sidebar padding */
+  padding-right: 10px; /* Align with new sidebar padding */
+  box-sizing: border-box;
 }
 
-.sort-button:hover {
-  background-color: var(--color-primary-medium);
-  color: var(--color-text-white);
-  box-shadow: 0 2px 6px rgba(33, 150, 243, 0.4);
+.sort-indicator-container:hover {
+  color: var(--color-primary-main);
+}
+
+.sort-indicator-text {
+  margin-right: 5px;
+  white-space: nowrap;
+}
+
+.sort-arrow {
+  transition: transform 0.2s ease;
+  color: var(--color-text-medium);
+}
+
+.sort-arrow.rotate-180 {
+  transform: rotate(180deg);
+}
+
+
+.video-list-scroll-wrapper {
+  flex-grow: 1;
+  overflow-y: auto;
+  padding: 0 10px; /* Adjusted padding to remove top and bottom space, keep sides */
+  margin: 0;
+  /* Ensure this wrapper takes full height to avoid white space below */
+  /* No fixed height, let flex-grow manage it */
 }
 
 /* Video List (Videos View) */
@@ -172,235 +307,478 @@
   list-style: none;
   padding: 0;
   margin: 0;
-  flex-grow: 1;
-  overflow-y: scroll !important; /* FORCED SCROLLBAR FOR DEBUGGING */
-  max-height: calc(100% - 150px); /* Adjusted to make scrollbar appear */
+  margin-bottom: 0; /* Ensure no extra margin-bottom on the ul itself */
+  /* Removed padding-left/right here as it's now on video-list-scroll-wrapper */
 }
 
 .video-list-ul li {
   display: flex;
   align-items: center;
-  gap: 7px;
-  padding: 7px 9px;
-  cursor: pointer;
-  margin-bottom: 4px;
-  background-color: var(--color-background-paper);
-  border-radius: var(--border-radius-md);
-  box-shadow: 0 1px 3px var(--shadow-subtle);
-  transition: background-color 0.2s ease, box-shadow 0.2s ease, transform 0.1s ease;
-  color: var(--color-text-dark);
-  font-family: 'DM Sans', sans-serif;
-  font-size: 0.85em;
-  font-weight: 500;
   justify-content: space-between;
-  border: 1px solid var(--color-border);
+  gap: 15px;
+  padding: 10px 15px;
+  cursor: pointer;
+  margin-bottom: 15px;
+  background-color: var(--color-background-panel);
+  color: var(--color-text-primary);
+  border-radius: var(--border-radius-lg);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.95em;
+  font-weight: 500;
+  border: 1px solid var(--color-border-light);
+  box-sizing: border-box;
+  min-height: 60px;
+}
+
+.video-list-ul li:first-child {
+  margin-top: 0;
 }
 
 .video-list-ul li:last-child {
-  margin-bottom: 0;
+  margin-bottom: 0; /* Remove margin from last item to prevent extra space at bottom of scroll */
 }
 
 .video-list-ul li:hover {
-  background-color: var(--color-background-hover);
-  box-shadow: 0 2px 6px var(--shadow-medium);
-  transform: translateY(-1px);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  border-color: var(--color-primary-main);
 }
 
 .video-list-ul li.active {
-  background-color: var(--color-primary-medium);
-  color: var(--color-text-white);
-  box-shadow: 0 2px 6px rgba(33, 150, 243, 0.6);
-  transform: translateY(-1px);
-  border-color: var(--color-primary-medium);
+  border: 1px solid transparent;
+  box-shadow: 0 0 0 2px rgba(102, 137, 255, 0.4),
+              0 4px 12px rgba(102, 137, 255, 0.2);
+  background-color: var(--color-background-panel);
+  transform: translateY(0);
 }
 
-.video-item-icon {
-  font-size: 1em;
-  color: var(--color-primary-dark);
-  flex-shrink: 0;
-  line-height: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+/* Ensure text color is visible and correct in active state */
+.video-list-ul li.active .video-item-title {
+  color: var(--color-text-blue) !important;
+}
+.video-list-ul li.active .video-item-type,
+.video-list-ul li.active .video-item-date-added,
+.video-list-ul li.active .video-status-tag {
+  color: var(--color-text-medium) !important;
 }
 
-.video-list-ul li.active .video-item-icon {
-  color: var(--color-text-white);
+.video-list-ul li.active .video-view-button {
+  background-color: var(--color-background-hover);
+  border-color: var(--color-primary-main);
 }
 
-.video-item-details {
+.video-list-ul li.active .video-view-button svg {
+  fill: var(--color-primary-dark);
+}
+
+.video-list-ul li.active .video-view-button:hover {
+  background-color: var(--color-text-white);
+  border-color: var(--color-primary-main);
+}
+
+
+.video-item-main-content {
   flex-grow: 1;
   display: flex;
   flex-direction: column;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  align-items: flex-start;
+  gap: 4px;
+  min-width: 0;
 }
 
 .video-item-title {
   font-weight: 600;
+  color: var(--color-text-blue);
+  white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  max-width: 100%;
 }
 
-.video-serial-number,
-.video-upload-date {
-  font-size: 0.65em;
+.video-item-meta-row {
+  display: flex;
+  gap: 15px;
+  font-size: 0.8em;
   color: var(--color-text-medium);
-  margin-top: 1px;
+  white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  max-width: 100%;
 }
 
-.video-category-tag {
-  background-color: var(--color-background-hover);
-  color: var(--color-text-medium);
-  font-family: 'DM Sans', sans-serif;
-  font-size: 0.6em;
-  padding: 2px 6px;
-  border-radius: 10px;
-  margin-left: 7px;
+.video-item-type,
+.video-item-date-added {
+  flex-shrink: 0;
+}
+
+.video-status-tag {
+  background-color: var(--color-accent-green-bg);
+  color: var(--color-accent-green-text);
+  padding: 4px 10px;
+  border-radius: 15px;
+  font-size: 0.75em;
+  font-weight: 600;
   white-space: nowrap;
   flex-shrink: 0;
-  font-weight: 600;
-  border: 1px solid var(--color-border);
+  margin-left: auto;
+  border: 1px solid var(--color-accent-green-bg);
 }
 
-.video-list-ul li.active .video-category-tag {
-  background-color: var(--color-primary-light);
-  color: var(--color-text-dark);
-  border-color: var(--color-primary-light);
+/* Main video list "Play" button styling (formerly "View") */
+.video-view-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 1px solid var(--color-primary-main);
+  background-color: var(--color-background-subtle);
+  transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease;
+  cursor: pointer;
+  padding: 0;
 }
 
-.no-results {
-  text-align: center;
-  color: var(--color-text-medium);
-  margin-top: 15px;
-  font-family: 'DM Sans', sans-serif;
-  font-style: italic;
-  padding: 10px;
+.video-view-button svg {
+  width: 16px;
+  height: 16px;
+  fill: var(--color-primary-dark);
+  stroke: none;
+}
+
+.video-view-button:hover {
   background-color: var(--color-background-hover);
-  border-radius: var(--border-radius-md);
-  border: 1px dashed var(--color-border);
-  box-shadow: 0 1px 3px var(--shadow-subtle);
-  line-height: 1.3;
-  font-size: 0.8em;
+  border-color: var(--color-primary-main);
+  box-shadow: 0 2px 5px rgba(102, 137, 255, 0.2);
+  transform: translateY(-1px);
 }
 
-/* Category List Specific Styles */
+.video-view-button:active {
+  transform: translateY(0);
+  box-shadow: 0 1px 3px rgba(102, 137, 255, 0.2);
+}
+
+
+/* Category List Specific Styles - Adjusted for exact screenshot match */
 .category-list-ul {
   list-style: none;
   padding: 0;
   margin: 0;
-  flex-grow: 1;
-  overflow-y: scroll !important; /* FORCED SCROLLBAR FOR DEBUGGING */
-  max-height: calc(100% - 150px); /* Adjusted to make scrollbar appear */
+  display: flex;
+  flex-direction: column;
+  gap: 8px; /* Slightly reduced gap between category cards */
+  padding-left: 10px; /* Align with new sidebar padding */
+  padding-right: 10px; /* Align with new sidebar padding */
+  box-sizing: border-box;
+  margin-bottom: 0; /* Ensure no extra margin-bottom on the ul itself */
 }
 
 .category-list-ul li {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 8px 10px;
+  justify-content: flex-start;
+  padding: 8px 12px; /* Reduced padding for smaller cards */
   cursor: pointer;
-  margin-bottom: 5px;
-  background-color: var(--color-background-paper);
-  border-radius: var(--border-radius-md);
-  box-shadow: 0 1px 3px var(--shadow-subtle);
-  transition: background-color 0.2s ease, box-shadow 0.2s ease, transform 0.1s ease;
-  color: var(--color-text-dark);
-  font-family: 'DM Sans', sans-serif;
-  font-size: 0.9em;
-  font-weight: 600;
-  border: 1px solid var(--color-border);
+  background-color: var(--color-background-panel);
+  color: var(--color-text-primary);
+  border-radius: var(--border-radius-md); /* Slightly less rounded for smaller size */
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08); /* Subtle shadow for card depth */
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.9em; /* Slightly smaller font size for category names */
+  font-weight: 500;
+  border: 1px solid var(--color-border-light);
+  box-sizing: border-box;
+  min-height: 48px; /* Reduced min-height for smaller cards */
 }
 
 .category-list-ul li:hover {
-  background-color: var(--color-background-hover);
-  box-shadow: 0 2px 6px var(--shadow-medium);
-  transform: translateY(-1px);
+  transform: translateY(-1px); /* Reduced lift on hover */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+  border-color: var(--color-primary-main);
 }
 
 .category-list-ul li.active {
-  background-color: var(--color-primary-medium);
-  color: var(--color-text-white);
-  box-shadow: 0 2px 6px rgba(33, 150, 243, 0.6);
-  transform: translateY(-1px);
-  border-color: var(--color-primary-medium);
+  background-color: var(--color-background-panel) !important;
+  color: var(--color-text-blue) !important;
+  border: 1px solid transparent !important;
+  box-shadow: 0 0 0 2px rgba(102, 137, 255, 0.4),
+              0 2px 8px rgba(102, 137, 255, 0.2);
 }
 
 .category-list-ul .category-icon {
-  font-size: 1.1em;
-  color: var(--color-primary-dark);
+  display: flex;
+  align-items: center;
+  justify-content: center;
   flex-shrink: 0;
+  width: 20px; /* Reduced icon size */
+  height: 20px; /* Reduced icon size */
+  color: var(--color-primary-main);
+  font-size: 1em; /* Adjusted font size for icon */
+  margin-right: 8px; /* Reduced space between icon and name */
 }
 
 .category-list-ul li.active .category-icon {
-  color: var(--color-text-white);
+  color: var(--color-primary-main);
 }
 
 .category-list-ul .category-name {
   flex-grow: 1;
+  font-weight: 500;
+  text-align: left;
 }
 
 .category-list-ul .category-toggle-icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1em;
-  color: var(--color-text-medium);
-  transition: transform 0.2s ease;
-}
-
-.category-list-ul li.active .category-toggle-icon {
-  color: var(--color-text-white);
+  display: none;
 }
 
 /* Category Videos Dropdown */
 .category-videos-dropdown {
   list-style: none;
   padding: 0;
-  margin: 5px 0 10px 20px;
-  border-left: 2px solid var(--color-border);
-  overflow-y: scroll !important; /* FORCED SCROLLBAR FOR DEBUGGING */
-  max-height: 150px; /* Limit height of dropdown to force scrollbar */
+  margin: 5px 0 10px 0;
+  border-left: 1px solid var(--color-border-light);
+  overflow-y: auto;
+  max-height: 200px;
+  padding-bottom: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-right: 10px;
+  padding-left: 10px;
 }
 
 .category-videos-dropdown li {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 5px 10px;
+  padding: 6px 8px;
   cursor: pointer;
-  background-color: var(--color-background-subtle);
-  border-radius: var(--border-radius-sm);
-  margin-bottom: 3px;
-  font-family: 'DM Sans', sans-serif;
-  font-size: 0.8em;
-  color: var(--color-text-dark);
-  transition: background-color 0.2s ease;
+  background-color: var(--color-background-panel);
+  color: var(--color-text-primary);
+  border-radius: var(--border-radius-md);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.85em;
+  font-weight: 500;
+  transition: background-color 0.2s ease, color 0.2s ease, border-left 0.2s ease, box-shadow 0.2s ease;
+  border: 1px solid var(--color-background-panel);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  box-sizing: border-box;
+  min-height: 40px;
 }
 
+/* Removed first-child and last-child margins as gap handles spacing */
 .category-videos-dropdown li:hover {
   background-color: var(--color-background-hover);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+  transform: translateY(-1px);
+  border-color: var(--color-border-medium);
 }
 
 .category-videos-dropdown li.active {
-  background-color: var(--color-primary-light);
-  color: var(--color-text-dark);
+  background-color: var(--color-background-panel) !important;
+  color: var(--color-text-blue) !important;
+  border: 1px solid transparent !important;
+  box-shadow: 0 0 0 2px rgba(102, 137, 255, 0.4),
+              0 2px 8px rgba(102, 137, 255, 0.2);
+}
+
+/* Ensure text color is visible and correct in active dropdown item */
+.category-videos-dropdown li.active .dropdown-video-title {
+  color: var(--color-text-blue) !important;
+}
+
+.dropdown-video-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0px;
+  flex-grow: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
 }
 
 .dropdown-video-title {
   font-weight: 500;
+  color: var(--color-text-blue);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  flex-grow: 1;
 }
 
 .dropdown-video-sn {
-  font-size: 0.75em;
+  font-size: 0.7em;
   color: var(--color-text-medium);
   margin-left: 8px;
   flex-shrink: 0;
+  display: none;
+}
+
+.dropdown-play-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 12px;
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 1px solid var(--color-primary-main);
+  background-color: var(--color-background-subtle);
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.dropdown-play-icon svg {
+  width: 12px;
+  height: 12px;
+  fill: var(--color-primary-dark);
+  stroke: none;
+}
+
+.dropdown-play-icon:hover {
+  background-color: var(--color-background-hover);
+  border-color: var(--color-primary-main);
+}
+
+.dropdown-play-icon:active {
+  background-color: var(--color-background-subtle) !important;
+  border-color: var(--color-primary-main) !important;
+}
+
+
+/* Styles for global search results */
+.global-filtered-results-ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.global-filtered-results-ul li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  padding: 10px 15px;
+  cursor: pointer;
+  margin-bottom: 15px;
+  background-color: var(--color-background-panel);
+  color: var(--color-text-primary);
+  border-radius: var(--border-radius-lg);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.95em;
+  font-weight: 500;
+  border: 1px solid var(--color-border-light);
+  box-sizing: border-box;
+  min-height: 60px;
+}
+
+.global-filtered-results-ul li:last-child {
+  margin-bottom: 0;
+}
+
+.global-filtered-results-ul li:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  border-color: var(--color-primary-main);
+}
+
+.global-filtered-results-ul li.active {
+  border: 1px solid transparent;
+  box-shadow: 0 0 0 2px rgba(102, 137, 255, 0.4),
+              0 4px 12px rgba(102, 137, 255, 0.2);
+  background-color: var(--color-background-panel);
+  transform: translateY(0);
+}
+
+/* Ensure text color is visible and correct in active global search result item */
+.global-filtered-results-ul li.active .global-search-result-title {
+  color: var(--color-text-blue) !important;
+}
+.global-filtered-results-ul li.active .global-search-result-type,
+.global-filtered-results-ul li.active .global-search-result-date-added {
+  color: var(--color-text-medium) !important;
+}
+
+.global-search-item-main-content {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  min-width: 0;
+}
+
+.global-search-result-title {
+  font-weight: 600;
+  color: var(--color-text-blue);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+.global-search-result-meta-row {
+  display: flex;
+  gap: 15px;
+  font-size: 0.8em;
+  color: var(--color-text-medium);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+.global-search-result-type,
+.global-search-result-date-added {
+  flex-shrink: 0;
+}
+
+@media (max-width: 768px) {
+  .list-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .search-toggle-button {
+    align-self: flex-end;
+  }
+  .global-search-input-container {
+    width: 100%;
+  }
+  .upload-button {
+    width: 100%;
+  }
+  .sort-and-view-controls {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+  .sort-button,
+  .view-toggle {
+    width: 100%;
+    max-width: 100%;
+  }
+  .video-list-ul li,
+  .category-list-ul li,
+  .global-filtered-results-ul li {
+    padding: 10px 10px;
+    min-height: 60px;
+  }
+  .video-item-meta-row,
+  .global-search-result-meta-row {
+    flex-direction: column;
+    gap: 2px;
+  }
+  .category-videos-dropdown li {
+    padding-left: 20px;
+  }
+  .video-view-button {
+    padding: 6px 12px;
+    font-size: 0.8em;
+  }
 }

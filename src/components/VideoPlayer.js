@@ -1,30 +1,25 @@
 // src/components/VideoPlayer.js
 import React, { useRef, useEffect, useState } from 'react';
-import './VideoPlayer.css';
+import './VideoPlayer.css'; // Ensure this CSS file exists
 
-const VideoPlayer = ({ video, onDeleteVideo, onEditVideo }) => {
+const VideoPlayer = ({ video, onDeleteVideo, onEditVideo, isAdminView }) => { // Added isAdminView prop
   const videoRef = useRef(null);
-  const [videoPlaybackError, setVideoPlaybackError] = useState(false); // Renamed state for clarity
+  const [videoPlaybackError, setVideoPlaybackError] = useState(false);
 
   useEffect(() => {
-    // Reset playback error state whenever the video prop changes
     setVideoPlaybackError(false);
 
-    // If a new video is selected and has a fileUrl, attempt to load it
     if (video && video.fileUrl && videoRef.current) {
-      videoRef.current.load(); // Force the video element to reload the new source
+      videoRef.current.load();
       videoRef.current.play().catch(error => {
-        // Catch autoplay errors (e.g., browser policy)
         console.warn("VideoPlayer: Autoplay prevented or failed:", error);
-        // Do not set videoPlaybackError here, as it's not a source error
       });
     }
-  }, [video]); // Depend on the video object itself
+  }, [video]);
 
-  // Handle errors that occur during video playback (e.g., unsupported format, network issues)
   const handleVideoError = () => {
     console.error("VideoPlayer: Error loading video source or during playback.");
-    setVideoPlaybackError(true); // Set state to show playback error message
+    setVideoPlaybackError(true);
   };
 
   // --- Conditional Rendering for different states ---
@@ -46,10 +41,12 @@ const VideoPlayer = ({ video, onDeleteVideo, onEditVideo }) => {
         <p>Error: Video file not found or could not be loaded.</p>
         <p className="small-text">This video's file might be missing or corrupted in your local storage.</p>
         <p className="small-text">Please try editing the video and re-uploading the file.</p>
-        <div className="player-action-buttons">
-          <button className="edit-video-button" onClick={onEditVideo}>Edit Video</button>
-          <button className="delete-video-button" onClick={() => onDeleteVideo(video.id)}>Delete Video</button>
-        </div>
+        {isAdminView && ( // Only show buttons if admin
+          <div className="player-action-buttons">
+            <button className="action-button-edit" onClick={() => onEditVideo(video)}>Edit Video</button>
+            <button className="action-button-delete" onClick={() => onDeleteVideo(video.id)}>Delete Video</button>
+          </div>
+        )}
       </div>
     );
   }
@@ -59,11 +56,13 @@ const VideoPlayer = ({ video, onDeleteVideo, onEditVideo }) => {
     return (
       <div className="video-player">
         <div className="video-header-actions">
-          <h2>{video.title}</h2>
-          <div className="player-action-buttons">
-            <button className="edit-video-button" onClick={onEditVideo}>Edit</button>
-            <button className="delete-video-button" onClick={() => onDeleteVideo(video.id)}>Delete</button>
-          </div>
+          <h2>{video.title || 'Untitled Video'}</h2>
+          {isAdminView && ( // Only show buttons if admin
+            <div className="player-action-buttons">
+              <button className="action-button-edit" onClick={() => onEditVideo(video)}>Edit</button>
+              <button className="action-button-delete" onClick={() => onDeleteVideo(video.id)}>Delete</button>
+            </div>
+          )}
         </div>
         <p className="video-category-detail">Category: {video.category || 'Uncategorized'}</p>
         <div className="video-embed-container">
@@ -78,7 +77,7 @@ const VideoPlayer = ({ video, onDeleteVideo, onEditVideo }) => {
             <p className="video-description">{video.description}</p>
           </div>
         )}
-        <p className="video-meta-info">Uploaded: {new Date(video.uploadDate).toLocaleDateString()}</p>
+        <p className="video-meta-info">Uploaded: {video.uploadDate ? new Date(video.uploadDate).toLocaleDateString() : 'N/A'}</p>
         {video.serialNumber && <p className="video-meta-info">Serial Number: {video.serialNumber}</p>}
       </div>
     );
@@ -88,11 +87,13 @@ const VideoPlayer = ({ video, onDeleteVideo, onEditVideo }) => {
   return (
     <div className="video-player">
       <div className="video-header-actions">
-        <h2>{video.title}</h2>
-        <div className="player-action-buttons">
-          <button className="edit-video-button" onClick={onEditVideo}>Edit</button>
-          <button className="delete-video-button" onClick={() => onDeleteVideo(video.id)}>Delete</button>
-        </div>
+        <h2>{video.title || 'Untitled Video'}</h2>
+        {isAdminView && ( // Only show buttons if admin
+          <div className="player-action-buttons">
+            <button className="action-button-edit" onClick={() => onEditVideo(video)}>Edit</button>
+            <button className="action-button-delete" onClick={() => onDeleteVideo(video.id)}>Delete</button>
+          </div>
+        )}
       </div>
       <p className="video-category-detail">Category: {video.category || 'Uncategorized'}</p>
 
@@ -102,11 +103,8 @@ const VideoPlayer = ({ video, onDeleteVideo, onEditVideo }) => {
           controls
           autoPlay
           onError={handleVideoError}
-          // The key prop is crucial here. It forces React to re-mount the video element
-          // when video.fileUrl changes, ensuring the browser reloads the new source.
           key={video.fileUrl}
         >
-          {/* Use video.fileType for the type attribute for better browser compatibility */}
           <source src={video.fileUrl} type={video.fileType || 'video/mp4'} />
           Your browser does not support the video tag.
         </video>
@@ -117,7 +115,7 @@ const VideoPlayer = ({ video, onDeleteVideo, onEditVideo }) => {
           <p className="video-description">{video.description}</p>
         </div>
       )}
-      <p className="video-meta-info">Uploaded: {new Date(video.uploadDate).toLocaleDateString()}</p>
+      <p className="video-meta-info">Uploaded: {video.uploadDate ? new Date(video.uploadDate).toLocaleDateString() : 'N/A'}</p>
       {video.serialNumber && <p className="video-meta-info">Serial Number: {video.serialNumber}</p>}
     </div>
   );

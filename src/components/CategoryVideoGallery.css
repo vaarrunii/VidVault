@@ -3,7 +3,7 @@
 
 .category-gallery-container {
   padding: 20px;
-  background-color: var(--color-background-paper);
+  background-color: var(--color-background-panel);
   height: 100%;
   box-sizing: border-box;
   display: flex;
@@ -14,87 +14,54 @@
 }
 
 .gallery-title {
-  font-family: 'DM Sans', sans-serif;
-  color: var(--color-text-dark);
-  font-size: 1.3em; /* REDUCED FONT SIZE */
+  font-family: 'Inter', sans-serif;
+  color: var(--color-text-primary); /* Using general primary text color */
+  font-size: 1.2em;
   font-weight: 700;
   margin-top: 0;
-  margin-bottom: 20px;
+  margin-bottom: 18px;
   text-align: left;
   width: 100%;
 }
 
 .category-gallery {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   gap: 20px;
   width: 100%;
-  overflow-y: scroll !important; /* FORCED SCROLLBAR FOR DEBUGGING */
+  overflow-y: auto;
   padding-bottom: 20px;
   flex-grow: 1;
+  display: grid;
+  align-content: flex-start;
 }
 
 .gallery-video-card {
-  background-color: var(--color-background-paper);
+  background-color: var(--color-background-panel);
   border-radius: var(--border-radius-md);
-  box-shadow: 0 4px 15px var(--shadow-medium);
-  overflow: hidden;
+  box-shadow: 0 2px 8px var(--shadow-subtle);
+  overflow: hidden; /* Keep overflow hidden for the card itself to maintain rounded corners */
   cursor: pointer;
   transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
-  border: 1px solid var(--color-border);
+  border: 1px solid var(--color-border-light);
   display: flex;
   flex-direction: column;
-  height: auto; /* Keep auto for content, but control inner padding */
-  max-height: 280px; /* Set a max height to make it vertically shorter */
-  min-height: 200px; /* Ensure a minimum height */
-  position: relative; /* Needed for positioning the delete button */
+  height: auto; /* Allow height to adjust dynamically */
+  min-height: 260px; /* Increased min-height again for more space */
+  position: relative;
 }
 
 .gallery-video-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
-  border-color: var(--color-primary-medium); /* Stronger accent border on hover */
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px var(--shadow-medium);
+  border-color: var(--color-primary-dark);
 }
-
-/*
-// CSS for the delete button on gallery cards commented out as requested.
-// To re-enable, uncomment this block and the corresponding JSX in CategoryVideoGallery.js
-.gallery-delete-button {
-  position: absolute;
-  top: 8px;
-  right: 8px;
-  background-color: rgba(255, 0, 0, 0.7); // Red with transparency
-  color: white;
-  border: none;
-  border-radius: 50%; // Make it circular
-  width: 28px;
-  height: 28px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.2em;
-  font-weight: bold;
-  cursor: pointer;
-  z-index: 10; // Ensure it's above the video/thumbnail
-  opacity: 1; // Always visible
-  transform: scale(1); // Always full size
-  transition: opacity 0.2s ease, transform 0.2s ease, background-color 0.2s ease;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-}
-
-.gallery-delete-button:hover {
-  background-color: rgba(255, 0, 0, 0.9); // More opaque red on button hover
-  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
-}
-*/
-
 
 .video-thumbnail {
   width: 100%;
-  padding-bottom: 56.25%; /* 16:9 aspect ratio */
+  padding-bottom: 56.25%;
   position: relative;
   overflow: hidden;
-  background: linear-gradient(135deg, var(--color-primary-light), var(--color-primary-medium)); /* Blue gradient for vibrancy */
+  background: linear-gradient(135deg, var(--color-primary-light), var(--color-primary-main));
   display: flex;
   align-items: center;
   justify-content: center;
@@ -111,13 +78,12 @@
   border-radius: var(--border-radius-md) var(--border-radius-md) 0 0;
 }
 
-/* IMPROVED THUMBNAIL PLACEHOLDER STYLES */
 .thumbnail-placeholder {
-  color: var(--color-text-white);
-  font-family: 'DM Sans', sans-serif;
-  font-size: 0.9em;
+  color: var(--color-text-blue);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.75em;
   text-align: center;
-  padding: 15px;
+  padding: 8px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -125,76 +91,80 @@
   width: 100%;
   height: 100%;
   position: absolute;
-  background: linear-gradient(135deg, var(--color-primary-light), var(--color-primary-medium)); /* Match thumbnail background */
+  background: linear-gradient(135deg, var(--color-primary-light), var(--color-primary-main));
   border-radius: var(--border-radius-md) var(--border-radius-md) 0 0;
 }
 
 .thumbnail-placeholder .icon {
-  font-size: 3.5em;
-  margin-bottom: 8px;
-  color: var(--color-text-white);
+  font-size: 2.5em;
+  margin-bottom: 4px;
+  color: var(--color-text-blue);
   opacity: 0.8;
   transition: transform 0.3s ease;
 }
 
 .gallery-video-card:hover .thumbnail-placeholder .icon {
-  transform: scale(1.1);
+  transform: scale(1.03);
 }
 
 .thumbnail-placeholder p {
   margin: 0;
-  color: var(--color-text-white);
+  color: var(--color-text-blue);
   font-weight: 600;
 }
 
 .gallery-video-info {
-  padding: 10px 15px; /* Reduced top/bottom padding */
+  padding: 10px 10px 8px; /* Consistent padding */
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  /* gap: 6px; REMOVED GAP TO CONTROL SPACING MANUALLY */
   flex-grow: 1;
-  justify-content: space-between; /* Distribute space */
+  justify-content: flex-start;
+  gap: 4px; /* Maintain gap for vertical separation */
+  height: auto; /* Allow height to adjust dynamically */
+  flex-shrink: 0; /* Prevent it from shrinking */
 }
 
 .gallery-video-title {
-  font-family: 'DM Sans', sans-serif;
-  font-size: 1em;
-  font-weight: 700;
-  color: var(--color-text-dark);
-  margin: 0 0 4px 0; /* Reduced margin below title */
+  font-family: 'Inter', sans-serif;
+  font-size: 0.85em;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin: 0;
   display: -webkit-box;
-  -webkit-line-clamp: 2; /* Limit to 2 lines */
+  -webkit-line-clamp: 2; /* Keep line clamp for title to prevent excessive height */
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
   width: 100%;
-  line-height: 1.3;
+  line-height: 1.2;
 }
 
 .gallery-video-description {
-  font-family: 'DM Sans', sans-serif;
-  font-size: 0.75em; /* Slightly smaller font for description */
+  font-family: 'Inter', sans-serif;
+  font-size: 0.7em;
   color: var(--color-text-medium);
-  margin: 0 0 6px 0; /* Reduced margin below description */
-  display: -webkit-box;
-  -webkit-line-clamp: 2; /* Limit to 2 lines */
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  margin: 0;
+  display: block;
+  max-height: 4.8em; /* Slightly increased max-height for description (approx 3.5 lines) */
+  overflow-y: auto; /* Make it scrollable vertically */
+  text-overflow: unset; /* No ellipsis */
   width: 100%;
-  line-height: 1.4;
+  line-height: 1.3;
+  flex-grow: 1; /* Allow it to take available space */
+  padding-right: 2px; /* Small padding for scrollbar */
+  margin-bottom: 6px; /* Increased margin-bottom to create more space between description and meta */
 }
 
 .gallery-video-meta {
-  font-family: 'DM Sans', sans-serif;
-  font-size: 0.7em; /* Slightly smaller font for meta info */
+  font-family: 'Inter', sans-serif;
+  font-size: 0.65em;
   color: var(--color-text-medium);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   width: 100%;
-  margin-top: auto; /* Pushes it to the bottom */
+  margin-top: 0; /* Ensures it starts immediately after the description */
 }
 
 .category-gallery-placeholder {
@@ -203,19 +173,19 @@
   justify-content: center;
   align-items: center;
   height: 100%;
-  color: var(--color-text-light);
-  font-family: 'DM Sans', sans-serif;
-  font-size: 1.2em;
-  background-color: var(--color-background-hover);
+  color: var(--color-text-medium);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.9em;
+  background-color: var(--color-background-subtle);
   border-radius: var(--border-radius-lg);
   text-align: center;
-  padding: 30px;
-  box-shadow: inset 0 0 10px var(--shadow-medium);
+  padding: 20px;
+  box-shadow: inset 0 0 8px rgba(0,0,0,0.05);
   font-weight: 600;
   line-height: 1.4;
-  border: 1px dashed var(--color-border);
+  border: 1px dashed var(--color-border-medium);
   width: 90%;
-  margin: 20px auto;
+  margin: 10px auto;
 }
 
 .category-gallery-placeholder p {
@@ -225,30 +195,32 @@
 
 @media (max-width: 768px) {
   .category-gallery-container {
-    padding: 15px;
+    padding: 10px;
   }
   .gallery-title {
-    font-size: 1.1em; /* FURTHER REDUCED FOR MOBILE */
-    margin-bottom: 15px;
+    font-size: 1em;
+    margin-bottom: 10px;
   }
   .category-gallery {
     grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-    gap: 15px;
+    gap: 8px;
   }
   .gallery-video-card {
-    max-height: 240px; /* Adjust max-height for mobile */
-    min-height: 180px;
+    min-height: 220px; /* Adjusted min-height for mobile */
   }
   .gallery-video-info {
-    padding: 8px 10px; /* Further reduce padding on mobile */
+    padding: 8px 8px 6px; /* Adjusted padding for mobile */
+    gap: 2px; /* Adjusted gap for mobile */
   }
   .gallery-video-title {
-    font-size: 0.9em;
+    font-size: 0.8em;
   }
   .gallery-video-description {
-    font-size: 0.7em;
+    font-size: 0.65em; /* Adjusted for mobile */
+    max-height: 4.2em; /* Adjust max-height for mobile to fit more lines */
+    margin-bottom: 4px; /* Adjusted margin for mobile */
   }
   .gallery-video-meta {
-    font-size: 0.65em;
+    font-size: 0.6em;
   }
 }

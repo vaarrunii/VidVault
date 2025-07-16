@@ -3,153 +3,382 @@
 
 /* Define CSS Custom Properties (Variables) for consistent theming */
 :root {
-  /* Blue & Vibrant Palette */
-  --color-primary-dark: #1976D2; /* Deep Blue */
-  --color-primary-medium: #2196F3; /* Medium Blue */
-  --color-primary-light: #BBDEFB; /* Very Light Blue */
-  --color-secondary-accent: #80CBC4; /* Soft Teal/Mint - for complementary highlights (still works well with blue) */
+  /* Exact Color Palette provided by user, adjusted for new white/grey scheme */
+  --color-primary-main: #6689FF; /* Main vibrant blue */
+  --color-primary-dark: #4285F4; /* Darker blue for hover/active states, also for filled play icon */
 
-  /* Backgrounds */
-  --color-background-light: #FAFAFA; /* Even lighter, almost pure white background */
-  --color-background-paper: #FFFFFF; /* Pure white for cards and main content areas */
-  --color-background-hover: #F5F5F5; /* Very subtle light gray for hover states */
-  --color-background-subtle: #EEEEEE; /* Slightly darker light gray for input fields, etc. */
+  /* Backgrounds - Adjusted to mostly white, with specific grey for search input */
+  --color-background-app: #F8FAFF; /* Very light, subtle blue-white inspired by image (7).png */
+  --color-background-panel: #FFFFFF; /* Pure white for main panels */
+  --color-background-subtle: #FFFFFF; /* Pure white for toggle/sort backgrounds, etc. */
+  --color-background-hover: #EAF0F9; /* A slightly deeper light blue for hover effects */
+  --color-search-input-bg: #F5F5F5; /* Grey for search input background (as requested) */
 
 
   /* Text Colors */
-  --color-text-dark: #212121; /* Very dark gray for primary text */
-  --color-text-medium: #616161; /* Medium gray for secondary text */
-  --color-text-light: #BDBDBD; /* Light gray for placeholders, inactive text */
-  --color-text-white: #FFFFFF; /* White text for contrast */
+  --color-text-heading: #3D5299; /* Dark blue for main heading ONLY */
+  --color-text-primary: #3C4043; /* General dark text */
+  --color-text-medium: #A3A7AF; /* Grey for text */
+  --color-text-light: #9AA0A6; /* Keeping for placeholders if needed, similar to A3A7AF */
+  --color-text-white: #FFFFFF; /* White text */
+  --color-text-blue: #6689FF; /* Blue text for active/links, matching new primary blue */
+  --color-text-dark-button: #3C4043; /* Dark text for light buttons */
 
-  /* Borders & Shadows */
-  --color-border: #E0E0E0; /* Light gray for borders */
-  --shadow-subtle: rgba(0, 0, 0, 0.03); /* Very light, diffused shadow */
-  --shadow-medium: rgba(0, 0, 0, 0.08); /* Slightly more pronounced shadow for depth */
+
+  /* Accent Colors (Green) */
+  --color-accent-green-bg: #C3FFC4;
+  --color-accent-green-text: #00C220;
+
+  /* Accent Colors (Red for Delete) */
+  --color-accent-red-button: #FF4D4D; /* A clear, strong red */
+  --color-accent-red-button-hover: #CC0000; /* Darker red on hover */
+
+  /* Accent Colors (Green for Save) */
+  --color-accent-green-button: #4CAF50; /* A clear, strong green */
+  --color-accent-green-button-hover: #388E3C; /* Darker green on hover */
+
+  /* Accent Colors (Grey for Cancel) */
+  --color-accent-grey-button: #9E9E9E; /* A clear, strong grey */
+  --color-accent-grey-button-hover: #757575; /* Darker grey on hover */
+
+
+  /* Borders & Shadows - Adjusted to new grey scale and primary blue */
+  --color-border-light: #E0E0E0; /* Lighter grey border */
+  --color-border-medium: #D0D0D0; /* Medium grey border */
+  --color-border-active: var(--color-primary-main); /* Active border will be primary blue */
+  --shadow-subtle: rgba(0, 0, 0, 0.08);
+  --shadow-medium: rgba(0, 0, 0, 0.15);
 
   /* Border Radii */
   --border-radius-sm: 4px;
-  --border-radius-md: 8px;
-  --border-radius-lg: 12px;
+  --border-radius-md: 6px;
+  --border-radius-lg: 10px;
 }
 
 /* Basic reset for body and root element */
 body {
   margin: 0;
-  font-family: 'DM Sans', sans-serif;
-  background-color: var(--color-background-light);
-  color: var(--color-text-dark);
-  line-height: 1.4; /* Slightly reduced line height */
+  font-family: 'Inter', sans-serif;
+  background-color: var(--color-background-app);
+  color: var(--color-text-primary);
+  line-height: 1.4;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  font-size: 14px; /* Base font size */
+  font-size: 14px;
+  height: 100vh; /* Ensure body takes full viewport height */
+  overflow: hidden; /* Prevent body scroll, let inner containers scroll */
 }
 
 #root {
-  height: 100vh;
+  height: 100%; /* Ensure root takes full body height */
+  display: flex;
+  flex-direction: column;
 }
 
 .app-container {
   display: flex;
   flex-direction: column;
   height: 100%;
-  overflow: hidden;
-  background-color: var(--color-background-light);
+  overflow: hidden; /* Prevent app-container scroll */
+  background-color: var(--color-background-app);
 }
 
 .app-header {
-  background-color: var(--color-background-paper);
-  padding: 8px 15px; /* Slightly reduced padding */
-  color: var(--color-text-dark);
+  background-color: var(--color-background-panel);
+  padding: 12px 20px;
+  color: var(--color-text-primary);
   text-align: center;
-  box-shadow: 0 1px 3px var(--shadow-subtle);
+  box-shadow: 0 2px 5px var(--shadow-subtle);
   z-index: 10;
-  border-bottom: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-border-light);
+  flex-shrink: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .app-header h1 {
   margin: 0;
-  font-family: 'DM Sans', sans-serif;
-  font-size: 1.4em; /* Reduced font size */
+  font-family: 'Inter', sans-serif;
+  font-size: 1.5em;
   font-weight: 700;
   letter-spacing: 0.02em;
+  color: var(--color-text-heading);
 }
+
+/* Admin Toggle Switch Styles - UPDATED for smaller size and exact look */
+.admin-toggle-label {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  font-size: 0.85em; /* Smaller font size as requested */
+  font-weight: 500;
+  color: var(--color-text-primary); /* Ensure text is visible */
+  margin-right: 20px;
+  position: relative;
+  top: 1px;
+}
+
+.admin-toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 38px; /* Smaller width for the track, as per screenshot */
+  height: 20px; /* Smaller height for the track, as per screenshot */
+  margin-left: 8px; /* Space between text and switch */
+}
+
+.admin-toggle-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.admin-toggle-slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: var(--color-border-medium); /* Grey when OFF */
+  transition: background-color 0.3s;
+  border-radius: 20px; /* Fully rounded track */
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.2);
+}
+
+.admin-toggle-slider:before {
+  position: absolute;
+  content: "";
+  height: 16px; /* Smaller circle */
+  width: 16px; /* Smaller circle */
+  left: 2px;
+  bottom: 2px;
+  background-color: var(--color-text-white); /* White circle */
+  transition: transform 0.3s, background-color 0.3s;
+  border-radius: 50%; /* Fully rounded circle */
+  box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+}
+
+.admin-toggle-switch input:checked + .admin-toggle-slider {
+  background-color: var(--color-primary-main); /* Blue when ON */
+}
+
+.admin-toggle-switch input:checked + .admin-toggle-slider:before {
+  transform: translateX(18px); /* Adjust translateX for smaller size (38px - 2px - 2px - 16px = 18px) */
+}
+
+
+/* General Button Styles - Shared properties for all buttons */
+.button-base {
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  text-align: center;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+}
+
+.button-base:hover {
+  box-shadow: 0 4px 8px rgba(0,0,0,0.25);
+}
+
+/* Specific styles for buttons within the EditVideoModal and Confirmation Modal */
+.button-success { /* For Save actions */
+  background-color: var(--color-accent-green-button); /* Green */
+  color: var(--color-text-white);
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-size: 1rem;
+  min-width: 120px;
+}
+
+.button-success:hover {
+  background-color: var(--color-accent-green-button-hover);
+}
+
+.button-secondary { /* For Cancel actions */
+  background-color: var(--color-accent-grey-button); /* Grey */
+  color: var(--color-text-white);
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-size: 1rem;
+  min-width: 120px;
+}
+
+.button-secondary:hover {
+  background-color: var(--color-accent-grey-button-hover);
+}
+
+.button-danger { /* For Delete in confirmation modal */
+  background-color: var(--color-accent-red-button); /* Red */
+  color: var(--color-text-white);
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-size: 1rem;
+  min-width: 120px;
+}
+
+.button-danger:hover {
+  background-color: var(--color-accent-red-button-hover);
+}
+
+
+/* NEW STYLES FOR EDIT/DELETE BUTTONS (Option 2: Subtle Background with Themed Text) */
+.action-button-edit {
+  background-color: #EAF0F9; /* Very light blue background */
+  color: var(--color-primary-main); /* Blue text */
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  transition: background-color 0.2s ease, box-shadow 0.2s ease;
+}
+.action-button-edit:hover {
+  background-color: #DDE7F5; /* Slightly darker light blue on hover */
+  box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+}
+
+.action-button-delete {
+  background-color: #FFEDED; /* Very light red background */
+  color: var(--color-accent-red-button); /* Red text */
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  transition: background-color 0.2s ease, box-shadow 0.2s ease;
+}
+.action-button-delete:hover {
+  background-color: #FFDADA; /* Slightly darker light red on hover */
+  box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+}
+
 
 .content-area {
   display: flex;
-  flex-grow: 1;
-  overflow: hidden;
-  padding: 10px;
-  gap: 10px;
+  flex-grow: 1; /* Allows content area to fill remaining vertical space */
+  overflow: hidden; /* Important to contain sidebar and main-content scrolls */
+  padding: 15px;
+  gap: 15px;
 }
 
 .sidebar {
-  flex: 0 0 30%;
+  flex: 0 0 30%; /* Fixed width for sidebar */
   max-width: 30%;
-  background-color: var(--color-background-paper);
+  background-color: var(--color-background-panel);
   border-radius: var(--border-radius-lg);
-  box-shadow: 0 4px 12px var(--shadow-medium);
-  overflow-y: scroll !important; /* FORCED SCROLLBAR FOR DEBUGGING */
-  padding: 0;
+  box-shadow: 0 5px 15px var(--shadow-medium);
+  /* Increased padding to provide ample space for content and shadows */
+  padding: 30px 20px; /* Adjusted padding to be consistent */
   box-sizing: border-box;
-  border: 1px solid var(--color-border);
+  border: 1px solid var(--color-border-light);
+  display: flex;
+  flex-direction: column;
+  height: 100%; /* Take full height of content-area */
+  overflow: hidden; /* Keep overflow hidden here, let inner wrapper scroll */
 }
 
 .main-content {
-  flex: 1;
-  background-color: var(--color-background-paper);
+  flex: 1; /* Allows main-content to take up all remaining horizontal space */
+  background-color: var(--color-background-panel);
   border-radius: var(--border-radius-lg);
-  box-shadow: 0 4px 12px var(--shadow-medium);
-  padding: 0;
-  overflow-y: scroll !important; /* FORCED SCROLLBAR FOR DEBUGGING */
+  box-shadow: 0 5px 15px var(--shadow-medium);
+  padding: 0; /* Padding will be handled by children for more control */
   display: flex;
-  align-items: flex-start;
+  flex-direction: column; /* Arrange children vertically */
+  height: 100%; /* Take full height of content-area */
+  overflow-y: auto; /* Allow main-content to scroll if content overflows */
+  align-items: stretch; /* Make children (like VideoPlayer) stretch to fill width */
   justify-content: flex-start;
-  border: 1px solid var(--color-border);
+  border: 1px solid var(--color-border-light);
 }
 
-/* Scrollbar Styling (Webkit - Chrome, Safari) - Made more prominent for debugging */
+/* Specific styles for the action buttons container in VideoPlayer */
+.player-action-buttons {
+  display: flex;
+  gap: 10px; /* Space between Edit and Delete buttons */
+  margin-top: 15px; /* Space below title/category */
+  justify-content: flex-end; /* Align to the right, matching screenshot */
+}
+
+/* Specific styles for the action buttons container in CategoryVideoGallery */
+.gallery-video-actions {
+  display: flex;
+  gap: 8px; /* Smaller space between buttons in gallery cards */
+  margin-top: 10px; /* Space below video info */
+  justify-content: flex-end; /* Align to the right */
+  width: 100%; /* Take full width of card */
+  padding: 0 10px 10px; /* Padding to align with card content */
+  box-sizing: border-box;
+}
+
+
+/* Placeholder message for main content area */
+.placeholder-message {
+  flex-grow: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  color: var(--color-text-medium);
+  font-size: 1.1em;
+  font-family: 'Inter', sans-serif;
+  padding: 20px;
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+}
+
+
+/* Scrollbar Styling (Webkit - Chrome, Safari) */
 ::-webkit-scrollbar {
-  width: 12px !important; /* Wider scrollbar */
-  height: 12px !important;
+  width: 8px;
+  height: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #f0f0f0 !important; /* Lighter track */
-  border-radius: 10px !important;
+  background: var(--color-background-subtle);
+  border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #FF5722 !important; /* Bright orange for visibility */
-  border-radius: 10px !important;
-  border: 3px solid #f0f0f0 !important; /* Creates a slight border effect */
+  background: var(--color-primary-dark);
+  border-radius: 10px;
+  border: 2px solid var(--color-background-subtle);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #E64A19 !important; /* Darker orange on hover */
+  background: var(--color-primary-main);
 }
 
-/* Firefox Scrollbar Styling - Made more prominent for debugging */
+/* Firefox Scrollbar Styling */
 * {
-  scrollbar-width: thin !important; /* 'auto' or 'thin' */
-  scrollbar-color: #FF5722 #f0f0f0 !important; /* thumb color track color */
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-primary-dark) var(--color-background-subtle);
 }
 
 
 @media (max-width: 768px) {
   body {
-    font-size: 13px; /* Smaller base font for mobile */
+    font-size: 13px;
   }
   .app-header {
-    padding: 6px 10px;
+    padding: 10px 15px;
+    flex-direction: column;
+    gap: 8px;
   }
   .app-header h1 {
-    font-size: 1.1em;
+    font-size: 1.3em;
   }
   .content-area {
     flex-direction: column;
-    padding: 8px;
-    gap: 8px;
+    padding: 10px;
+    gap: 10px;
   }
 
   .sidebar, .main-content {
@@ -164,14 +393,54 @@ body {
   }
 }
 
-/* Loading Spinner (kept for App.js loading state) */
+/* Loading Spinner */
 .loading-spinner {
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100%;
-  font-family: 'DM Sans', sans-serif;
-  font-size: 1.1em; /* Reduced font size */
+  font-family: 'Inter', sans-serif;
+  font-size: 1.1em;
   color: var(--color-text-medium);
   font-weight: 500;
+}
+
+/* Styles for the confirmation modal overlay and content */
+.confirmation-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.confirmation-modal {
+  background-color: white;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+  text-align: center;
+  max-width: 400px;
+  width: 90%;
+}
+
+.confirmation-modal h3 {
+  margin-top: 0;
+  color: #333;
+}
+
+.confirmation-modal p {
+  margin-bottom: 20px;
+  color: #555;
+}
+
+.confirmation-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
 }

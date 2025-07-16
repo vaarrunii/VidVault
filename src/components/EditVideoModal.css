@@ -1,0 +1,131 @@
+/* src/components/EditVideoModal.css */
+
+/* Styles for the EditVideoModal overlay and content */
+.edit-video-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.edit-video-modal {
+  background-color: var(--color-background-panel);
+  padding: 30px;
+  border-radius: var(--border-radius-lg);
+  box-shadow: 0 5px 15px var(--shadow-medium);
+  max-width: 500px; /* Max width for the modal */
+  width: 90%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 20px; /* Spacing between sections */
+}
+
+.edit-video-modal h2 {
+  margin-top: 0;
+  margin-bottom: 20px;
+  color: var(--color-text-heading);
+  text-align: center;
+  font-size: 1.8em;
+}
+
+.edit-video-modal form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px; /* Spacing between form groups */
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-group label {
+  font-weight: 600;
+  color: var(--color-text-primary);
+  font-size: 0.95em;
+}
+
+.form-input,
+.form-textarea {
+  padding: 10px 12px;
+  border: 1px solid var(--color-border-medium);
+  border-radius: var(--border-radius-md);
+  font-size: 1em;
+  color: var(--color-text-primary);
+  background-color: var(--color-background-subtle);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.form-input:focus,
+.form-textarea:focus {
+  outline: none;
+  border-color: var(--color-primary-main);
+  box-shadow: 0 0 0 2px rgba(102, 137, 255, 0.2); /* Light blue shadow */
+}
+
+.form-textarea {
+  resize: vertical; /* Allow vertical resizing */
+  min-height: 80px;
+}
+
+/* Custom File Upload Button */
+.hidden-file-input {
+  display: none; /* Hide the actual file input */
+}
+
+.custom-file-upload-button {
+  display: inline-block;
+  padding: 10px 20px;
+  border-radius: var(--border-radius-md);
+  cursor: pointer;
+  text-align: center;
+  font-size: 1em;
+  font-weight: bold;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  /* Inherit button-base and button-primary styles */
+  background-color: var(--color-primary-main);
+  color: var(--color-text-white);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.custom-file-upload-button:hover {
+  background-color: var(--color-primary-dark);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.25);
+}
+
+.current-file-info,
+.selected-file-info,
+.no-file-selected-info {
+  font-size: 0.85em;
+  color: var(--color-text-medium);
+  margin-top: 5px;
+}
+
+.selected-file-info {
+  color: var(--color-accent-green-text); /* Green for selected file */
+}
+
+.no-file-selected-info {
+  color: var(--color-text-light); /* Lighter grey for no file selected */
+}
+
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end; /* Align buttons to the right */
+  gap: 10px; /* Space between buttons */
+  margin-top: 20px;
+}
+
+/* Ensure modal buttons use the base button styles */
+.edit-video-modal .button-base {
+  min-width: 120px; /* Slightly wider buttons for modal actions */
+}
